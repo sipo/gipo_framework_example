@@ -1,0 +1,3 @@
+[submodule "lib/gipo"]
+	path = lib/gipo
+	url = git@github.com:sipo/gipo.git
