@@ -1,2 +1,6 @@
-/*.iml
-/.idea
+﻿
+*.iml
+/bin/swf/*.swf
+.idea
+*.hxproj
+/out

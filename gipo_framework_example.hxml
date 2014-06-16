@@ -1,0 +1,9 @@
+-swf bin/swf/GipoFrameworkExample.swf
+-main GipoFrameworkExample
+-debug
+-D fdb
+-swf-version 11.8
+-swf-header 480:720:30:ffffff
+-cp src
+-cp lib/gipo/src
+-swf-lib lib/minimalcomps.swc
