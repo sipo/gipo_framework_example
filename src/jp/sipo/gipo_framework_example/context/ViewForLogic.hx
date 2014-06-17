@@ -5,7 +5,7 @@ package jp.sipo.gipo_framework_example.context;
  * @author sipo
  */
 import jp.sipo.gipo_framework_example.scene.mock1.Mock1.Mock1ViewPeek;
-interface LogicToView
+interface ViewForLogic
 {
 	/**
 	 * シーンの変更を依頼する

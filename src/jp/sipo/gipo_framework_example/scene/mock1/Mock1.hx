@@ -6,7 +6,7 @@ package jp.sipo.gipo_framework_example.scene.mock1;
  */
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import jp.sipo.gipo_framework_example.context.LogicStatus;
-import jp.sipo.gipo_framework_example.context.LogicToView;
+import jp.sipo.gipo_framework_example.context.ViewForLogic;
 import jp.sipo.gipo_framework_example.context.LogicScene;
 import jp.sipo.gipo_framework_example.scene.mock0.Mock0;
 /* ================================================================

@@ -21,21 +21,21 @@ package jp.sipo.gipo_framework_example.context;
  */
 
 import jp.sipo.gipo_framework_example.etc.Snapshot;
-import jp.sipo.gipo_framework_example.context.Logic.HookToLogic;
+import jp.sipo.gipo_framework_example.context.Logic.LogicForHook;
 import jp.sipo.gipo_framework_example.context.Hook.HookEvent;
 import jp.sipo.gipo_framework_example.operation.OperationLogic;
 import jp.sipo.gipo.core.GearHolderImpl;
 /* ================================================================
  * インターフェース
  * ===============================================================*/
-interface ViewToHook
+interface HookForView
 {
 	/** Viewからの即時発行できる入力イベント */
 	public function viewInput(command:EnumValue):Void;
 	/** Viewからの非同期に発生するイベント */
 	public function viewReady(command:EnumValue):Void;
 }
-interface LogicToHook
+interface HookForLogic
 {
 	/** Logicからのデータの構成の状態 */
 	public function logicSnapshot(snapshot:Snapshot):Void;
@@ -43,10 +43,10 @@ interface LogicToHook
 /* ================================================================
  * 実装
  * ===============================================================*/
-class Hook extends GearHolderImpl implements ViewToHook implements LogicToHook
+class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 {
 	@:absorb
-	private var logic:HookToLogic;
+	private var logic:LogicForHook;
 	@:absorb
 	private var operation:OperationLogic;
 	

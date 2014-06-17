@@ -8,7 +8,7 @@ package jp.sipo.gipo_framework_example.pilotView;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import jp.sipo.gipo_framework_example.scene.mock1.Mock1PilotView;
 import jp.sipo.gipo_framework_example.scene.mock0.Mock0PilotView;
-import jp.sipo.gipo_framework_example.context.LogicToView;
+import jp.sipo.gipo_framework_example.context.ViewForLogic;
 import flash.display.Sprite;
 import jp.sipo.gipo.core.GearDiffuseTool;
 import flash.display.Sprite;

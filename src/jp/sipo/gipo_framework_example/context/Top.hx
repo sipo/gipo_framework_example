@@ -77,10 +77,10 @@ class Top extends GearHolderImpl
 		
 		// 関係性の追加
 		// 	Logic周り
-		hook.gearOutside().otherDiffuse(logic, HookToLogic);
-		view.gearOutside().otherDiffuse(hook, ViewToHook);
-		logic.gearOutside().otherDiffuse(view, LogicToView);
-		logic.gearOutside().otherDiffuse(hook, LogicToHook);
+		hook.gearOutside().otherDiffuse(logic, LogicForHook);
+		view.gearOutside().otherDiffuse(hook, HookForView);
+		logic.gearOutside().otherDiffuse(view, ViewForLogic);
+		logic.gearOutside().otherDiffuse(hook, HookForLogic);
 		// 	Operation周り
 		hook.gear.otherDiffuse(operationLogic, OperationLogic);
 		operationHook.gearOutside().otherDiffuse(operationLogic, OperationLogic);

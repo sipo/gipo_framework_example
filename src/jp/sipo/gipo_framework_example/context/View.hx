@@ -14,7 +14,7 @@ package jp.sipo.gipo_framework_example.context;
  */
 import flash.display.Sprite;
 import jp.sipo.gipo.core.GearHolderLow;
-interface View extends GearHolderLow extends LogicToView
+interface View extends GearHolderLow extends ViewForLogic
 {
 	/**
 	 * 必要設定

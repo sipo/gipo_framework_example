@@ -7,7 +7,7 @@ package jp.sipo.gipo_framework_example.context;
 import jp.sipo.gipo.core.handler.GearDispatcherRedTape;
 import jp.sipo.gipo.core.handler.GearDispatcher;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
-import jp.sipo.gipo_framework_example.context.LogicToView;
+import jp.sipo.gipo_framework_example.context.ViewForLogic;
 import jp.sipo.gipo.core.handler.AddBehaviorPreset;
 import jp.sipo.gipo.core.state.StateGearHolderImpl;
 class LogicScene extends StateGearHolderImpl
@@ -33,7 +33,7 @@ class LogicScene extends StateGearHolderImpl
 	private function changeViewScene(viewSceneKind:ViewSceneKind):Dynamic
 	{
 		isChangeViewScene = true;
-		var view:LogicToView = gear.absorb(LogicToView);
+		var view:ViewForLogic = gear.absorb(ViewForLogic);
 		return view.changeScene(viewSceneKind);
 	}
 	

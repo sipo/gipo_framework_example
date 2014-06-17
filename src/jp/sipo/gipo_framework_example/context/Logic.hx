@@ -9,16 +9,16 @@ package jp.sipo.gipo_framework_example.context;
  */
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import jp.sipo.gipo_framework_example.scene.mock1.Mock1;
-import jp.sipo.gipo_framework_example.context.Hook.LogicToHook;
+import jp.sipo.gipo_framework_example.context.Hook.HookForLogic;
 import jp.sipo.gipo_framework_example.etc.Snapshot;
 import jp.sipo.gipo.core.GearDiffuseTool;
 import jp.sipo.gipo_framework_example.etc.LogicInitialize;
 import jp.sipo.ds.Point;
 import jp.sipo.gipo.core.state.StateSwitcherGearHolderImpl;
-class Logic extends StateSwitcherGearHolderImpl<LogicScene> implements HookToLogic
+class Logic extends StateSwitcherGearHolderImpl<LogicScene> implements LogicForHook
 {
 	@:absorb
-	private var hook:LogicToHook;
+	private var hook:HookForLogic;
 	
 	/* Logic内部の全体データ */
 	private var logicStatus:LogicStatus;
@@ -90,7 +90,7 @@ class Logic extends StateSwitcherGearHolderImpl<LogicScene> implements HookToLog
 /**
  * hookに対する定義
  */
-interface HookToLogic
+interface LogicForHook
 {
 	/** イベントの発生 */
 	public function noticeEvent(command:EnumValue):Void;
