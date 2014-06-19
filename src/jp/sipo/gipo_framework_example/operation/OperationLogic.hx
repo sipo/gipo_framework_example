@@ -62,7 +62,8 @@ class OperationLogic extends GearHolderImpl
 		var fileReference:FileReference = new FileReference();
 		var dataString:String = Serializer.run(reproduceLog);
 		var date:Date = Date.now();
-		var dateString:String = DateTools.format(date, "%Y_%m_%d_%H_%M_%S_") + (date.getTime() % 1000);
+		var milliSecond:String = StringTools.lpad(Std.string((date.getTime() % 1000)),"0",3);
+		var dateString:String = DateTools.format(date, "%Y_%m_%d_%H_%M_%S_") + milliSecond;
 		fileReference.save(dataString, 'log_${dateString}.txt');
 	}
 	

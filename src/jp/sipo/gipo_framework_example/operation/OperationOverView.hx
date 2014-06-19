@@ -60,7 +60,7 @@ class OperationOverView extends GearHolderImpl implements OperationView
 		// ボタンの設置
 		minimalizeUiContainer.addPushButton("Operation", operationButton_click);
 		
-		openUiContainer.addPushButton("-", minimizeButton_click);
+		openUiContainer.addPushButton("close", minimizeButton_click);
 		logCounter = openUiContainer.addLabel("none");
 		openUiContainer.addPushButton("SaveLog", saveLogButton_click);
 		openUiContainer.addPushButton("LoadLog", loadLogButton_click);
