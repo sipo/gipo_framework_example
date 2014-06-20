@@ -5,13 +5,13 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo_framework_example.operation.Reproduce.LogPart;
 import haxe.Serializer;
 import jp.sipo.util.HandlerUtil;
 import flash.events.Event;
 import flash.net.FileReference;
 import jp.sipo.util.Copy;
 import jp.sipo.gipo_framework_example.operation.OperationHook.OperationHookEvent;
-import jp.sipo.gipo_framework_example.context.Hook.HookEvent;
 import jp.sipo.gipo.core.GearHolderImpl;
 interface OperationPeek
 {
@@ -21,24 +21,14 @@ class OperationLogic extends GearHolderImpl
 {
 	@:absorb
 	private var operationView:OperationView;
-	
-	/* 再生ログ */
-	private var reproduceLog:Array<HookEvent> = new Array<HookEvent>();
+	@:absorb
+	private var reproduce:Reproduce;
 	
 	
 	/** コンストラクタ */
 	public function new() 
 	{
 		super();
-	}
-	
-	/**
-	 * イベントを記録する
-	 */
-	public function record(event:HookEvent):Void
-	{
-		reproduceLog.push(Copy.deep(event));	// 速度を上げるためには場合分けしてもいい
-		operationView.updateLog(reproduceLog.length);
 	}
 	
 	/**
@@ -49,10 +39,9 @@ class OperationLogic extends GearHolderImpl
 		trace('stb OperationLogic noticeEvent($event)');
 		switch (event)
 		{
+			case OperationHookEvent.LogUpdate : operationView.updateLog(reproduce.getRecordLog().length);
 			case OperationHookEvent.LocalSave : localSave();
-				
 			case OperationHookEvent.LocalLoad :  localLoad();// TODO:ローカル読み込み処理
-				
 		}
 	}
 	
@@ -60,7 +49,7 @@ class OperationLogic extends GearHolderImpl
 	private function localSave():Void
 	{
 		var fileReference:FileReference = new FileReference();
-		var dataString:String = Serializer.run(reproduceLog);
+		var dataString:String = Serializer.run(reproduce.getRecordLog());
 		var date:Date = Date.now();
 		var milliSecond:String = StringTools.lpad(Std.string((date.getTime() % 1000)),"0",3);
 		var dateString:String = DateTools.format(date, "%Y_%m_%d_%H_%M_%S_") + milliSecond;
@@ -72,7 +61,7 @@ class OperationLogic extends GearHolderImpl
 	{
 		var fileReference:FileReference = new FileReference();
 		HandlerUtil.once(fileReference, Event.SELECT, function (event:Event){
-			
+			// http://www.sousakuba.com/weblabo/actionscript-filereference.html
 		});
 		// TODO:ローカル保存処理
 		
@@ -89,14 +78,8 @@ class OperationLogic extends GearHolderImpl
  * 
  * @author sipo
  */
-class ReproduceFle
+typedef ReproduceFile =
 {
 	/** log */
-	public var reproduceLog:Array<HookEvent> = new Array<HookEvent>();
-	
-	/** コンストラクタ */
-	public function new(reproduceLog:Array<HookEvent>) 
-	{
-		this.reproduceLog = reproduceLog;
-	}
+	public var reproduceLog:Array<LogPart>;
 }

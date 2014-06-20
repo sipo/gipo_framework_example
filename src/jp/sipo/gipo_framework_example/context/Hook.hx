@@ -20,10 +20,9 @@ package jp.sipo.gipo_framework_example.context;
  * @auther sipo
  */
 
+import jp.sipo.gipo_framework_example.operation.Reproduce;
 import jp.sipo.gipo_framework_example.etc.Snapshot;
 import jp.sipo.gipo_framework_example.context.Logic.LogicForHook;
-import jp.sipo.gipo_framework_example.context.Hook.HookEvent;
-import jp.sipo.gipo_framework_example.operation.OperationLogic;
 import jp.sipo.gipo.core.GearHolderImpl;
 /* ================================================================
  * インターフェース
@@ -48,7 +47,7 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 	@:absorb
 	private var logic:LogicForHook;
 	@:absorb
-	private var operation:OperationLogic;
+	private var reproduce:Reproduce;
 	
 	/** コンストラクタ */
 	public function new() 
@@ -86,45 +85,30 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 	/**
 	 * イベントの実行を処理
 	 */
-	private function executeEvent(logway:HookEventLogway):Void
+	private function executeEvent(logWay:HookEventLogway):Void
 	{
-		var hookEvent:HookEvent = new HookEvent(logway, 0);	// TODO:frame
-		switch (hookEvent.logWay)
+		switch (logWay)
 		{
 			case HookEventLogway.Input(command) :
 				// 発生イベントの登録
-				operation.record(hookEvent);
+				reproduce.record(logWay);
 				// イベントの実行
 				logic.noticeEvent(command);
 			case HookEventLogway.Ready(command) : 
 				// TODO:readyを待つ処理
 				// 発生イベントの登録
-				operation.record(hookEvent);
+				reproduce.record(logWay);
 				// イベントの実行
 				logic.noticeEvent(command);
 			case HookEventLogway.Snapshot(value) :
 				// 発生イベントの登録
-				operation.record(hookEvent); 
+				reproduce.record(logWay); 
 				// イベントの実行
 				logic.setSnapshot(value);
 		}
 	}
 }
 
-/**
- * イベント種類全ての定義を保持する
- */
-class HookEvent
-{
-	public var logWay:HookEventLogway;
-	public var frame:Int;// 発生フレーム
-	
-	/** コンストラクタ */
-	public function new(logWay:HookEventLogway, frame:Int) 
-	{
-		this.logWay = logWay;
-	}
-}
 /**
  * Logの記録と再生方法の種類
  */

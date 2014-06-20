@@ -30,6 +30,10 @@ class OperationHook extends GearHolderImpl
  */
 enum OperationHookEvent
 {
+	/** ログの入力あり */
+	LogUpdate;
+	/** ローカル保存の指示 */
 	LocalSave;
+	/** ローカル読み込みの指示 */
 	LocalLoad;
 }

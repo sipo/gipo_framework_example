@@ -5,6 +5,9 @@ package jp.sipo.gipo_framework_example.context;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo.core.GearHolderLow;
+import jp.sipo.gipo.core.GearHolder;
+import jp.sipo.gipo_framework_example.operation.ReproducePhase;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import jp.sipo.gipo_framework_example.context.Logic;
 import jp.sipo.util.GlobalDispatcher;
@@ -77,15 +80,17 @@ class Top extends GearHolderImpl
 		
 		// 関係性の追加
 		// 	Logic周り
-		hook.gearOutside().otherDiffuse(logic, LogicForHook);
-		view.gearOutside().otherDiffuse(hook, HookForView);
-		logic.gearOutside().otherDiffuse(view, ViewForLogic);
-		logic.gearOutside().otherDiffuse(hook, HookForLogic);
+		childDiffuse(hook , logic, LogicForHook);
+		childDiffuse(view , hook , HookForView);
+		childDiffuse(logic, view , ViewForLogic);
+		childDiffuse(logic, hook , HookForLogic);
 		// 	Operation周り
-		hook.gear.otherDiffuse(operationLogic, OperationLogic);
-		operationHook.gearOutside().otherDiffuse(operationLogic, OperationLogic);
-		operationView.gearOutside().otherDiffuse(operationHook, OperationHook);
-		operationLogic.gearOutside().otherDiffuse(operationView, OperationView);
+		childDiffuse(hook , reproduce, Reproduce);
+		childDiffuse(operationHook , operationLogic, OperationLogic);
+		childDiffuse(operationView , operationHook , OperationHook);
+		childDiffuse(operationLogic, operationView , OperationView);
+		childDiffuse(operationLogic, reproduce, Reproduce);
+		childDiffuse(reproduce, operationHook, OperationHook);
 		
 		// ビューのレイヤーとなるSprite。DisplayObjectを使用するViewのみ使用し、Starlingを使用するViewでは無視されるかデバッグ表示のみに使用される
 		var viewLayer:Sprite = new Sprite();
@@ -97,12 +102,21 @@ class Top extends GearHolderImpl
 		operationView.setContext(operationViewLayer);
 		view.gearOutside().disposeTask(function () current.removeChild(operationViewLayer));	// layerの削除処理をViewに連動させる
 		
+		
 		// イベント準備
 		globalDispatcher = new GlobalDispatcher();
 		globalDispatcher.setFlashContext(current);
 		tool.diffuse(globalDispatcher, GlobalDispatcher);
 		tool.bookChild(globalDispatcher);
 		globalDispatcher.addFrameHandler(frame);	// フレームイベント
+		
+		// reproduseの準備
+		reproduce.startPhase(ReproducePhase.Asynchronous);
+	}
+	/* child以下にtargetをdiffuseする */
+	inline private function childDiffuse(child:GearHolderLow, target:GearHolderLow, clazz:Class<Dynamic>):Void
+	{
+		child.gearOutside().otherDiffuse(target, clazz);
 	}
 	
 	@:handler(GearDispatcherKind.Run)
@@ -115,11 +129,19 @@ class Top extends GearHolderImpl
 	/* フレーム動作 */
 	private function frame():Void
 	{
-		reproduce.inputUpdate();
+		// 非同期状態を終了
+		reproduce.endPhase();
+		// 再現状態の更新処理
 		reproduce.update();
+		// inputUpdate（マウスドラッグなどの入力）
+		reproduce.startPhase(ReproducePhase.ViewInputUpdate);
 		view.inputUpdate();
+		reproduce.endPhase();
+		// Logicのメイン処理
 		logic.update();
 		view.update();
 		view.draw();
+		// 再現状態を非同期に切り替え
+		reproduce.startPhase(ReproducePhase.Asynchronous);
 	}
 }
