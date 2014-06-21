@@ -7,6 +7,7 @@ package jp.sipo.gipo_framework_example.operation;
  */
 import haxe.ds.Option;
 import haxe.ds.Option;
+import haxe.ds.Option;
 import jp.sipo.gipo_framework_example.operation.OperationHook.OperationHookEvent;
 import jp.sipo.util.Copy;
 import jp.sipo.gipo_framework_example.context.Hook;
@@ -16,9 +17,14 @@ class ReproduceBase<Phase> extends GearHolderImpl
 	@:absorb
 	private var operationHook:OperationHook;
 	/* 記録ログ */
-	private var recordLog:Array<LogPart<Phase>> = new Array<LogPart<Phase>>();
+	private var recordLog:ReproduceLog<Phase> = new ReproduceLog<Phase>();
 	/* 記録状態 */
 	private var optionPhase:Option<Phase> = Option.None;
+	
+	/* フレームカウント */
+	private var frame:Int = 0;
+	/* 再生ログ */
+	private var optionReplayLog:Option<ReproduceLog<Phase>> = Option.None;
 	
 	// TODO:<<尾野>>記録と再生の内部分離
 	
@@ -61,6 +67,7 @@ class ReproduceBase<Phase> extends GearHolderImpl
 	 */
 	public function update():Void
 	{
+		frame++;
 	}
 	
 	/**
@@ -74,15 +81,15 @@ class ReproduceBase<Phase> extends GearHolderImpl
 			case Option.None : throw 'フェーズ中でなければ記録できません $optionPhase';
 			case Option.Some(v) : phase = v;
 		}
-		var logPart:LogPart<Phase> = {phase:phase, frame:0, logway:logway};
-		recordLog.push(Copy.deep(logPart));	// 速度を上げるためには場合分けしてもいい
+		var logPart:LogPart<Phase> = {phase:phase, frame:frame, logway:logway};
+		recordLog.add(Copy.deep(logPart));	// 速度を上げるためには場合分けしてもいい
 		operationHook.input(OperationHookEvent.LogUpdate);
 	}
 	
 	/**
 	 * ログを返す
 	 */
-	public function getRecordLog():Array<LogPart<Phase>>
+	public function getRecordLog():ReproduceLog<Phase>
 	{
 		return recordLog;
 	}
@@ -90,9 +97,10 @@ class ReproduceBase<Phase> extends GearHolderImpl
 	/**
 	 * 再生する
 	 */
-	public function replay(log:Array<LogPart<Phase>>):Void
+	public function replay(log:ReproduceLog<Phase>):Void
 	{
 		trace(log);
+		optionReplayLog = Option.Some(log);
 	}
 }
 typedef LogPart<Phase> =

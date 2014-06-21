@@ -41,7 +41,7 @@ class OperationLogic extends GearHolderImpl
 		trace('stb OperationLogic noticeEvent($event)');
 		switch (event)
 		{
-			case OperationHookEvent.LogUpdate : operationView.updateLog(reproduce.getRecordLog().length);
+			case OperationHookEvent.LogUpdate : operationView.updateLog(reproduce.getRecordLog().getLength());
 			case OperationHookEvent.LocalSave : localSave();
 			case OperationHookEvent.LocalLoad :  localLoad();// TODO:ローカル読み込み処理
 		}
@@ -96,5 +96,5 @@ class OperationLogic extends GearHolderImpl
 typedef ReproduceFile =
 {
 	/** log */
-	public var reproduceLog:Array<LogPart<ReproducePhase>>;
+	public var reproduceLog:ReproduceLog<ReproducePhase>;
 }
