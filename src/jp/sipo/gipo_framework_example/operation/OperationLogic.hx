@@ -5,7 +5,9 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
-import jp.sipo.gipo_framework_example.operation.Reproduce.LogPart;
+import String;
+import flash.utils.ByteArray;
+import jp.sipo.gipo_framework_example.operation.ReproduceBase.LogPart;
 import haxe.Serializer;
 import jp.sipo.util.HandlerUtil;
 import flash.events.Event;
@@ -49,7 +51,8 @@ class OperationLogic extends GearHolderImpl
 	private function localSave():Void
 	{
 		var fileReference:FileReference = new FileReference();
-		var dataString:String = Serializer.run(reproduce.getRecordLog());
+		var reproduceFile:ReproduceFile = {reproduceLog:reproduce.getRecordLog()};
+		var dataString:String = Serializer.run(reproduceFile);
 		var date:Date = Date.now();
 		var milliSecond:String = StringTools.lpad(Std.string((date.getTime() % 1000)),"0",3);
 		var dateString:String = DateTools.format(date, "%Y_%m_%d_%H_%M_%S_") + milliSecond;
@@ -61,16 +64,28 @@ class OperationLogic extends GearHolderImpl
 	{
 		var fileReference:FileReference = new FileReference();
 		HandlerUtil.once(fileReference, Event.SELECT, function (event:Event){
-			// http://www.sousakuba.com/weblabo/actionscript-filereference.html
+			fileReference.load();
 		});
-		// TODO:ローカル保存処理
+		HandlerUtil.once(fileReference, Event.COMPLETE, function (event:Event){
+			localLoadParse(fileReference.data);
+		});
+		fileReference.browse();
 		
+		// http://www.sousakuba.com/weblabo/actionscript-filereference.html
 		
 //		fileReference.addEventListener(Event.COMPLETE, completeHandler);
 //		var completeHandler:Dynamic -> Void = function ()
 //		{
 //			
 //		};
+	}
+	private function localLoadParse(data:ByteArray):Void
+	{
+		data.position = 0;
+		var dataString:String = data.readUTFBytes(data.length);
+		var reproduceFile:ReproduceFile = haxe.Unserializer.run(dataString);
+		data.clear();
+		reproduce.replay(reproduceFile.reproduceLog);
 	}
 }
 /**
@@ -81,5 +96,5 @@ class OperationLogic extends GearHolderImpl
 typedef ReproduceFile =
 {
 	/** log */
-	public var reproduceLog:Array<LogPart>;
+	public var reproduceLog:Array<LogPart<ReproducePhase>>;
 }

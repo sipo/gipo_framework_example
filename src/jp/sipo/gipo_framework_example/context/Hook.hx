@@ -20,6 +20,7 @@ package jp.sipo.gipo_framework_example.context;
  * @auther sipo
  */
 
+import jp.sipo.gipo_framework_example.operation.ReproducePhase;
 import jp.sipo.gipo_framework_example.operation.Reproduce;
 import jp.sipo.gipo_framework_example.etc.Snapshot;
 import jp.sipo.gipo_framework_example.context.Logic.LogicForHook;
