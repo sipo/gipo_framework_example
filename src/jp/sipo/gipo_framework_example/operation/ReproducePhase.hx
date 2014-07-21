@@ -4,13 +4,12 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
-enum ReproducePhase
+enum ReproducePhase<UpdateKind>
 {
-	/** フェーズなし。入力があるとエラー */
+	/** 発生しない */
 	None;
 	/** 非同期。フレームとフレームの間で発生する。ユーザー入力やロード待ちなどほとんどがこれ */
 	Asynchronous;
-	/** ViewのinputUpdateで発生する。ドラッグなど */
-	ViewInputUpdate;
-	// その他、セクションのUpdateで発生するものがあればここに追加
+	/** Updateタイミングで発生するもの。ドラッグなど */
+	Update(kind:UpdateKind);
 }

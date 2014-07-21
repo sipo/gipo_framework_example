@@ -109,9 +109,6 @@ class Top extends GearHolderImpl
 		tool.diffuse(globalDispatcher, GlobalDispatcher);
 		tool.bookChild(globalDispatcher);
 		globalDispatcher.addFrameHandler(frame);	// フレームイベント
-		
-		// reproduseの準備
-		reproduce.startPhase(ReproducePhase.Asynchronous);
 	}
 	/* child以下にtargetをdiffuseする */
 	inline private function childDiffuse(child:GearHolderLow, target:GearHolderLow, clazz:Class<Dynamic>):Void
@@ -122,6 +119,8 @@ class Top extends GearHolderImpl
 	@:handler(GearDispatcherKind.Run)
 	private function run():Void
 	{
+		// reproduseの準備（このrun自体も非同期である）
+		reproduce.startPhase(ReproducePhase.Asynchronous);
 		// 開始
 		logic.start();
 	}

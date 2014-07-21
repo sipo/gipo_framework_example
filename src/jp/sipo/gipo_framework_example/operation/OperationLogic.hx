@@ -96,5 +96,5 @@ class OperationLogic extends GearHolderImpl
 typedef ReproduceFile =
 {
 	/** log */
-	public var reproduceLog:ReproduceLog<ReproducePhase>;
+	public var reproduceLog:ReproduceLog<ExampleUpdateKind>;
 }

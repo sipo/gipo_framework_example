@@ -28,6 +28,7 @@ class ReproduceBase<Phase> extends GearHolderImpl
 	
 	// TODO:<<尾野>>記録と再生の内部分離
 	
+	Phaseを指定するのではなくUpdateKindを指定するように変える
 	
 	/** コンストラクタ */
 	public function new() 

@@ -5,9 +5,9 @@ package jp.sipo.gipo_framework_example.operation;
  * @auther sipo
  */
 import jp.sipo.gipo_framework_example.operation.ReproduceBase.LogPart;
-class ReproduceLog<Phase>
+class ReproduceLog<UpdateKind>
 {
-	private var list = new Array<LogPart<Phase>>();
+	private var list = new Array<LogPart<UpdateKind>>();
 	
 	/** コンストラクタ */
 	public function new() {  }
@@ -15,7 +15,7 @@ class ReproduceLog<Phase>
 	/**
 	 * 追加する
 	 */
-	public function add(logPart:LogPart<Phase>):Void
+	public function add(logPart:LogPart<UpdateKind>):Void
 	{
 		list.push(logPart);
 	}
