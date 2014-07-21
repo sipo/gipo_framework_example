@@ -5,6 +5,7 @@ package jp.sipo.gipo_framework_example.context;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo_framework_example.operation.ReproduceBase;
 import jp.sipo.gipo_framework_example.operation.ExampleUpdateKind;
 import jp.sipo.gipo.core.GearHolderLow;
 import jp.sipo.gipo.core.GearHolder;
@@ -14,7 +15,6 @@ import jp.sipo.gipo_framework_example.context.Logic;
 import jp.sipo.util.GlobalDispatcher;
 import jp.sipo.gipo_framework_example.context.Hook;
 import jp.sipo.gipo.core.GearDiffuseTool;
-import jp.sipo.gipo_framework_example.operation.Reproduce;
 import jp.sipo.gipo_framework_example.operation.OperationView;
 import jp.sipo.gipo_framework_example.operation.OperationHook;
 import jp.sipo.gipo_framework_example.operation.OperationLogic;
@@ -36,7 +36,7 @@ class Top extends GearHolderImpl
 	private var operationLogic:OperationLogic;
 	private var operationHook:OperationHook;
 	private var operationView:OperationView;
-	private var reproduce:Reproduce;
+	private var reproduce:ReproduceBase<ExampleUpdateKind>;
 	
 	/* 全体イベントの発行 */
 	private var globalDispatcher:GlobalDispatcher;
@@ -66,7 +66,7 @@ class Top extends GearHolderImpl
 		operationHook = new OperationHook();
 		tool.bookChild(operationHook);
 		// reproduceの用意
-		reproduce = new Reproduce();
+		reproduce = new ReproduceBase<ExampleUpdateKind>();
 		tool.bookChild(reproduce);
 		// hookの用意
 		hook = new Hook();
@@ -86,11 +86,11 @@ class Top extends GearHolderImpl
 		childDiffuse(logic, view , ViewForLogic);
 		childDiffuse(logic, hook , HookForLogic);
 		// 	Operation周り
-		childDiffuse(hook , reproduce, Reproduce);
+		childDiffuseWithKey(hook , reproduce, TopDiffuseKey.ReproduceKey);
 		childDiffuse(operationHook , operationLogic, OperationLogic);
 		childDiffuse(operationView , operationHook , OperationHook);
 		childDiffuse(operationLogic, operationView , OperationView);
-		childDiffuse(operationLogic, reproduce, Reproduce);
+		childDiffuseWithKey(operationLogic , reproduce, TopDiffuseKey.ReproduceKey);
 		childDiffuse(reproduce, operationHook, OperationHook);
 		
 		// ビューのレイヤーとなるSprite。DisplayObjectを使用するViewのみ使用し、Starlingを使用するViewでは無視されるかデバッグ表示のみに使用される
@@ -115,6 +115,11 @@ class Top extends GearHolderImpl
 	inline private function childDiffuse(child:GearHolderLow, target:GearHolderLow, clazz:Class<Dynamic>):Void
 	{
 		child.gearOutside().otherDiffuse(target, clazz);
+	}
+	/* child以下にtargetをenumでdiffuseする */
+	inline private function childDiffuseWithKey(child:GearHolderLow, target:GearHolderLow, key:TopDiffuseKey):Void
+	{
+		child.gearOutside().otherDiffuseWithEnum(target, key);
 	}
 	
 	@:handler(GearDispatcherKind.Run)
@@ -144,4 +149,8 @@ class Top extends GearHolderImpl
 		// 再現状態を非同期に切り替え
 		reproduce.startPhase(ReproducePhase.Asynchronous);
 	}
+}
+enum TopDiffuseKey
+{
+	ReproduceKey;
 }

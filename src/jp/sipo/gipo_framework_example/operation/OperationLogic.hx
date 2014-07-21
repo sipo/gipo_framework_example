@@ -5,9 +5,10 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo_framework_example.context.Top.TopDiffuseKey;
 import String;
 import flash.utils.ByteArray;
-import jp.sipo.gipo_framework_example.operation.ReproduceBase.LogPart;
+import jp.sipo.gipo_framework_example.operation.ReproduceBase;
 import haxe.Serializer;
 import jp.sipo.util.HandlerUtil;
 import flash.events.Event;
@@ -23,8 +24,8 @@ class OperationLogic extends GearHolderImpl
 {
 	@:absorb
 	private var operationView:OperationView;
-	@:absorb
-	private var reproduce:Reproduce;
+	@:absorbWithKey(TopDiffuseKey.ReproduceKey)
+	private var reproduce:ReproduceBase<ExampleUpdateKind>;
 	
 	
 	/** コンストラクタ */
@@ -41,7 +42,11 @@ class OperationLogic extends GearHolderImpl
 		trace('stb OperationLogic noticeEvent($event)');
 		switch (event)
 		{
-			case OperationHookEvent.LogUpdate : operationView.updateLog(reproduce.getRecordLog().getLength());
+			case OperationHookEvent.LogUpdate : 
+			{
+				var reproduceLog:ReproduceLog<Dynamic> = reproduce.getRecordLog();
+				operationView.updateLog(reproduceLog.getLength());
+			}
 			case OperationHookEvent.LocalSave : localSave();
 			case OperationHookEvent.LocalLoad :  localLoad();// TODO:ローカル読み込み処理
 		}

@@ -20,8 +20,9 @@ package jp.sipo.gipo_framework_example.context;
  * @auther sipo
  */
 
-import jp.sipo.gipo_framework_example.operation.ReproducePhase;
-import jp.sipo.gipo_framework_example.operation.Reproduce;
+import jp.sipo.gipo_framework_example.operation.ExampleUpdateKind;
+import jp.sipo.gipo_framework_example.operation.ReproduceBase;
+import jp.sipo.gipo_framework_example.context.Top.TopDiffuseKey;
 import jp.sipo.gipo_framework_example.etc.Snapshot;
 import jp.sipo.gipo_framework_example.context.Logic.LogicForHook;
 import jp.sipo.gipo.core.GearHolderImpl;
@@ -47,8 +48,8 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 {
 	@:absorb
 	private var logic:LogicForHook;
-	@:absorb
-	private var reproduce:Reproduce;
+	@:absorbWithKey(TopDiffuseKey.ReproduceKey)
+	private var reproduce:ReproduceBase<ExampleUpdateKind>;
 	
 	/** コンストラクタ */
 	public function new() 
