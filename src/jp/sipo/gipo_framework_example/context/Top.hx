@@ -5,6 +5,7 @@ package jp.sipo.gipo_framework_example.context;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo_framework_example.operation.ExampleUpdateKind;
 import jp.sipo.gipo.core.GearHolderLow;
 import jp.sipo.gipo.core.GearHolder;
 import jp.sipo.gipo_framework_example.operation.ReproducePhase;
@@ -133,7 +134,7 @@ class Top extends GearHolderImpl
 		// 再現状態の更新処理
 		reproduce.update();
 		// inputUpdate（マウスドラッグなどの入力）
-		reproduce.startPhase(ReproducePhase.ViewInputUpdate);
+		reproduce.startPhase(ReproducePhase.Update(ExampleUpdateKind.ViewInput));
 		view.inputUpdate();
 		reproduce.endPhase();
 		// Logicのメイン処理

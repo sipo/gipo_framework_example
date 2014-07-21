@@ -12,23 +12,21 @@ import jp.sipo.gipo_framework_example.operation.OperationHook.OperationHookEvent
 import jp.sipo.util.Copy;
 import jp.sipo.gipo_framework_example.context.Hook;
 import jp.sipo.gipo.core.GearHolderImpl;
-class ReproduceBase<Phase> extends GearHolderImpl
+class ReproduceBase<UpdateKind> extends GearHolderImpl
 {
 	@:absorb
 	private var operationHook:OperationHook;
 	/* 記録ログ */
-	private var recordLog:ReproduceLog<Phase> = new ReproduceLog<Phase>();
+	private var recordLog:ReproduceLog<UpdateKind> = new ReproduceLog<UpdateKind>();
 	/* 記録状態 */
-	private var optionPhase:Option<Phase> = Option.None;
+	private var optionPhase:Option<ReproducePhase<UpdateKind>> = Option.None;
 	
 	/* フレームカウント */
 	private var frame:Int = 0;
 	/* 再生ログ */
-	private var optionReplayLog:Option<ReproduceLog<Phase>> = Option.None;
+	private var optionReplayLog:Option<ReproduceLog<UpdateKind>> = Option.None;
 	
 	// TODO:<<尾野>>記録と再生の内部分離
-	
-	Phaseを指定するのではなくUpdateKindを指定するように変える
 	
 	/** コンストラクタ */
 	public function new() 
@@ -39,7 +37,7 @@ class ReproduceBase<Phase> extends GearHolderImpl
 	/**
 	 * フェーズ切り替え
 	 */
-	public function startPhase(nextPhase:Phase):Void
+	public function startPhase(nextPhase:ReproducePhase<UpdateKind>):Void
 	{
 		switch(optionPhase)
 		{
@@ -76,13 +74,13 @@ class ReproduceBase<Phase> extends GearHolderImpl
 	 */
 	public function record(logway:HookEventLogway):Void
 	{
-		var phase:Phase = null;
+		var phase:ReproducePhase<UpdateKind> = null;
 		switch(optionPhase)
 		{
 			case Option.None : throw 'フェーズ中でなければ記録できません $optionPhase';
 			case Option.Some(v) : phase = v;
 		}
-		var logPart:LogPart<Phase> = {phase:phase, frame:frame, logway:logway};
+		var logPart:LogPart<UpdateKind> = new LogPart<UpdateKind>(phase, frame, logway);
 		recordLog.add(Copy.deep(logPart));	// 速度を上げるためには場合分けしてもいい
 		operationHook.input(OperationHookEvent.LogUpdate);
 	}
@@ -90,7 +88,7 @@ class ReproduceBase<Phase> extends GearHolderImpl
 	/**
 	 * ログを返す
 	 */
-	public function getRecordLog():ReproduceLog<Phase>
+	public function getRecordLog():ReproduceLog<UpdateKind>
 	{
 		return recordLog;
 	}
@@ -98,18 +96,26 @@ class ReproduceBase<Phase> extends GearHolderImpl
 	/**
 	 * 再生する
 	 */
-	public function replay(log:ReproduceLog<Phase>):Void
+	public function replay(log:ReproduceLog<UpdateKind>):Void
 	{
 		trace(log);
 		optionReplayLog = Option.Some(log);
 	}
 }
-typedef LogPart<Phase> =
+class LogPart<UpdateKind>
 {
 	/** 再現フェーズ */
-	public var phase:Phase;
+	public var phase:ReproducePhase<UpdateKind>;
 	/** 発生フレーム */
 	public var frame:Int;
 	/** ログ情報 */
 	public var logway:HookEventLogway;
+	
+	/** コンストラクタ */
+	public function new(phase:ReproducePhase<UpdateKind>, frame:Int, logway:HookEventLogway) 
+	{
+		this.phase = phase;
+		this.frame = frame;
+		this.logway = logway;
+	}
 }
