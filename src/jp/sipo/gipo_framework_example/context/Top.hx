@@ -8,7 +8,6 @@ package jp.sipo.gipo_framework_example.context;
 import jp.sipo.gipo_framework_example.operation.ReproduceBase;
 import jp.sipo.gipo_framework_example.operation.ExampleUpdateKind;
 import jp.sipo.gipo.core.GearHolderLow;
-import jp.sipo.gipo.core.GearHolder;
 import jp.sipo.gipo_framework_example.operation.ReproducePhase;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import jp.sipo.gipo_framework_example.context.Logic;

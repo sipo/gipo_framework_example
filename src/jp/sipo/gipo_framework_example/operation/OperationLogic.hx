@@ -5,6 +5,7 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import jp.sipo.util.Note;
 import jp.sipo.gipo_framework_example.context.Top.TopDiffuseKey;
 import String;
 import flash.utils.ByteArray;
@@ -39,7 +40,7 @@ class OperationLogic extends GearHolderImpl
 	 */
 	public function noticeEvent(event:OperationHookEvent):Void
 	{
-		trace('stb OperationLogic noticeEvent($event)');
+		trace('stb OperationLogic noticeEvent($event)'); // TODO:<<尾野>>Note.debug
 		switch (event)
 		{
 			case OperationHookEvent.LogUpdate : 

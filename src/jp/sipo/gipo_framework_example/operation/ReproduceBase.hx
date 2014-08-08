@@ -5,6 +5,8 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import GipoFrameworkExample.NoteTag;
+import jp.sipo.util.Note;
 import haxe.ds.Option;
 import haxe.ds.Option;
 import haxe.ds.Option;
@@ -26,12 +28,15 @@ class ReproduceBase<UpdateKind> extends GearHolderImpl
 	/* 再生ログ */
 	private var optionReplayLog:Option<ReproduceLog<UpdateKind>> = Option.None;
 	
+	var note:Note;
+	
 	// TODO:<<尾野>>記録と再生の内部分離
 	
 	/** コンストラクタ */
 	public function new() 
 	{
 		super();
+		note = new Note([NoteTag.Reproduse]);
 	}
 	
 	/**
@@ -98,7 +103,7 @@ class ReproduceBase<UpdateKind> extends GearHolderImpl
 	 */
 	public function replay(log:ReproduceLog<UpdateKind>):Void
 	{
-		trace(log);
+		note.log(log);
 		optionReplayLog = Option.Some(log);
 	}
 }
@@ -117,5 +122,13 @@ class LogPart<UpdateKind>
 		this.phase = phase;
 		this.frame = frame;
 		this.logway = logway;
+	}
+	
+	/**
+	 * 文字列表現
+	 */
+	public function toString():String
+	{
+		return '[LogPart phase=$phase frame=$frame logway=$logway]';
 	}
 }

@@ -4,6 +4,8 @@ package ;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo.core.config.GearNoteTag;
+import jp.sipo.util.Note;
 import flash.events.Event;
 import jp.sipo.gipo_framework_example.context.DevConfig;
 import jp.sipo.gipo_framework_example.context.Top;
@@ -36,8 +38,14 @@ class GipoFrameworkExample
 	/** コンストラクタ */
 	public function new() 
 	{
+		// TODO:<<尾野>>GearNoteTagの頭文字大文字に
+		Note.setTags([GearNoteTag.stateChange, NoteTag.Reproduse], []);
 		// ここから本処理の開始
 		top = new Top(Lib.current, new DevConfig());
 		top.gearOutside().initializeTop(null);
 	}
+}
+enum NoteTag
+{
+	Reproduse;
 }

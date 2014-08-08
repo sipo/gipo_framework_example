@@ -4,6 +4,7 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import jp.sipo.util.Note;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import com.bit101.components.Label;
 import com.bit101.components.ComboBox;
@@ -116,7 +117,7 @@ class OperationOverView extends GearHolderImpl implements OperationView
 	/* 読み込みファイルを選択 */
 	private function comboBox_select(index:Int):Void
 	{
-		trace(index);
+		trace(index); // TODO:<<尾野>>Note.debug
 	}
 }
 private enum Mode
