@@ -7,12 +7,13 @@ package jp.sipo.gipo_framework_example.context;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo_framework_example.context.reproduce.LogicStatus;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import jp.sipo.gipo_framework_example.scene.mock1.Mock1;
 import jp.sipo.gipo_framework_example.context.Hook.HookForLogic;
-import jp.sipo.gipo_framework_example.etc.Snapshot;
+import jp.sipo.gipo_framework_example.operation.Snapshot;
 import jp.sipo.gipo.core.GearDiffuseTool;
-import jp.sipo.gipo_framework_example.etc.LogicInitialize;
+import jp.sipo.gipo_framework_example.scene.initialize.LogicInitialize;
 import jp.sipo.ds.Point;
 import jp.sipo.gipo.core.state.StateSwitcherGearHolderImpl;
 class Logic extends StateSwitcherGearHolderImpl<LogicScene> implements LogicForHook
@@ -58,7 +59,7 @@ class Logic extends StateSwitcherGearHolderImpl<LogicScene> implements LogicForH
 	 */
 	public function snapshotEvent(kind:SnapshotKind):Void
 	{
-		hook.logicSnapshot(new Snapshot(kind, logicStatus));
+		hook.logicSnapshot(new SnapshotImpl(kind, logicStatus));
 	}
 	
 	/* ================================================================
@@ -76,10 +77,11 @@ class Logic extends StateSwitcherGearHolderImpl<LogicScene> implements LogicForH
 	
 	public function setSnapshot(snapshot:Snapshot):Void
 	{
+		var snapshotImpl:SnapshotImpl = cast(snapshot, SnapshotImpl);
 		// logicStatusの反映
-		logicStatus.setAll(snapshot.logicStatus);
+		logicStatus.setAll(snapshotImpl);
 		// 種類に応じる処理
-		switch(snapshot.kind)
+		switch(snapshotImpl.kind)
 		{
 			case SnapshotKind.Initialize : stateSwitcherGear.changeState(new LogicInitialize());
 			case SnapshotKind.Mock1 :  stateSwitcherGear.changeState(new Mock1());

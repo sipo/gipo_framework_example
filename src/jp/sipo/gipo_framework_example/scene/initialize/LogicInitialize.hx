@@ -1,4 +1,4 @@
-package jp.sipo.gipo_framework_example.etc;
+package jp.sipo.gipo_framework_example.scene.initialize;
 /**
  * 初期化用に使われるシーン
  * 

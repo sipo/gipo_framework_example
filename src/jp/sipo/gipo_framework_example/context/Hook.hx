@@ -20,10 +20,11 @@ package jp.sipo.gipo_framework_example.context;
  * @auther sipo
  */
 
-import jp.sipo.gipo_framework_example.operation.ExampleUpdateKind;
+import jp.sipo.gipo_framework_example.operation.ReproduceLog.LogwayKind;
+import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
 import jp.sipo.gipo_framework_example.operation.ReproduceBase;
 import jp.sipo.gipo_framework_example.context.Top.TopDiffuseKey;
-import jp.sipo.gipo_framework_example.etc.Snapshot;
+import jp.sipo.gipo_framework_example.operation.Snapshot;
 import jp.sipo.gipo_framework_example.context.Logic.LogicForHook;
 import jp.sipo.gipo.core.GearHolderImpl;
 /* ================================================================
@@ -63,12 +64,12 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 	
 	public function viewInput(command:EnumValue):Void
 	{
-		executeEvent(HookEventLogway.Input(command));
+		executeEvent(LogwayKind.Input(command));
 	}
 	
 	public function viewReady(command:EnumValue):Void
 	{
-		executeEvent(HookEventLogway.Ready(command));
+		executeEvent(LogwayKind.Ready(command));
 	}
 	
 	/* ================================================================
@@ -77,7 +78,7 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 	
 	public function logicSnapshot(snapshot:Snapshot):Void
 	{
-		executeEvent(HookEventLogway.Snapshot(snapshot));
+		executeEvent(LogwayKind.Snapshot(snapshot));
 	}
 	
 	/* ================================================================
@@ -87,22 +88,22 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 	/**
 	 * イベントの実行を処理
 	 */
-	private function executeEvent(logWay:HookEventLogway):Void
+	private function executeEvent(logWay:LogwayKind):Void
 	{
 		switch (logWay)
 		{
-			case HookEventLogway.Input(command) :
+			case LogwayKind.Input(command) :
 				// 発生イベントの登録
 				reproduce.record(logWay);
 				// イベントの実行
 				logic.noticeEvent(command);
-			case HookEventLogway.Ready(command) : 
+			case LogwayKind.Ready(command) : 
 				// TODO:readyを待つ処理
 				// 発生イベントの登録
 				reproduce.record(logWay);
 				// イベントの実行
 				logic.noticeEvent(command);
-			case HookEventLogway.Snapshot(value) :
+			case LogwayKind.Snapshot(value) :
 				// 発生イベントの登録
 				reproduce.record(logWay); 
 				// イベントの実行
@@ -110,20 +111,6 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 		}
 	}
 }
-
-/**
- * Logの記録と再生方法の種類
- */
-enum HookEventLogway
-{
-	/** 対象タイミングで実行 */
-	Input(command:EnumValue);
-	/** 対象タイミングで準備が整うまで全体を待たせる（処理時間が不明瞭な動作） */
-	Ready(command:EnumValue);
-	/** Logicを生成するのに必要。再生の最初のほか、途中再開にも使用できる */
-	Snapshot(value:Snapshot);
-}
-
 
 
 

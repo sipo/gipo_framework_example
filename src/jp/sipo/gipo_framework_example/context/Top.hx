@@ -5,10 +5,10 @@ package jp.sipo.gipo_framework_example.context;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo_framework_example.operation.ReproduceLog.ReproducePhase;
 import jp.sipo.gipo_framework_example.operation.ReproduceBase;
-import jp.sipo.gipo_framework_example.operation.ExampleUpdateKind;
+import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
 import jp.sipo.gipo.core.GearHolderLow;
-import jp.sipo.gipo_framework_example.operation.ReproducePhase;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import jp.sipo.gipo_framework_example.context.Logic;
 import jp.sipo.util.GlobalDispatcher;
@@ -135,18 +135,22 @@ class Top extends GearHolderImpl
 	{
 		// 非同期状態を終了
 		reproduce.endPhase();
+		
 		// 再現状態の更新処理
 		reproduce.update();
+		
 		// inputUpdate（マウスドラッグなどの入力）
 		reproduce.startPhase(ReproducePhase.Update(ExampleUpdateKind.ViewInput));
 		view.inputUpdate();
 		reproduce.endPhase();
+		
 		// Logicのメイン処理
 		logic.update();
 		view.update();
 		view.draw();
+		
 		// 再現状態を非同期に切り替え
-		reproduce.startPhase(ReproducePhase.Asynchronous);
+		reproduce.startPhase(ReproducePhase.Asynchronous);	// TODO:<<尾野>>メソッド名を分離してもっと楽にできるはず
 	}
 }
 enum TopDiffuseKey

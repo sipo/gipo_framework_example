@@ -5,6 +5,7 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
 import jp.sipo.util.Note;
 import jp.sipo.gipo_framework_example.context.Top.TopDiffuseKey;
 import String;
@@ -17,6 +18,7 @@ import flash.net.FileReference;
 import jp.sipo.util.Copy;
 import jp.sipo.gipo_framework_example.operation.OperationHook.OperationHookEvent;
 import jp.sipo.gipo.core.GearHolderImpl;
+import haxe.Unserializer;
 interface OperationPeek
 {
 	
@@ -40,7 +42,6 @@ class OperationLogic extends GearHolderImpl
 	 */
 	public function noticeEvent(event:OperationHookEvent):Void
 	{
-		trace('stb OperationLogic noticeEvent($event)'); // TODO:<<尾野>>Note.debug
 		switch (event)
 		{
 			case OperationHookEvent.LogUpdate : 
@@ -49,7 +50,7 @@ class OperationLogic extends GearHolderImpl
 				operationView.updateLog(reproduceLog.getLength());
 			}
 			case OperationHookEvent.LocalSave : localSave();
-			case OperationHookEvent.LocalLoad :  localLoad();// TODO:ローカル読み込み処理
+			case OperationHookEvent.LocalLoad :  localLoad();
 		}
 	}
 	
@@ -73,25 +74,25 @@ class OperationLogic extends GearHolderImpl
 			fileReference.load();
 		});
 		HandlerUtil.once(fileReference, Event.COMPLETE, function (event:Event){
-			localLoadParse(fileReference.data);
+			afterLoadFile(fileReference.data);
 		});
 		fileReference.browse();
-		
-		// http://www.sousakuba.com/weblabo/actionscript-filereference.html
-		
-//		fileReference.addEventListener(Event.COMPLETE, completeHandler);
-//		var completeHandler:Dynamic -> Void = function ()
-//		{
-//			
-//		};
 	}
-	private function localLoadParse(data:ByteArray):Void
+	
+	/* ファイルデータ取得後 */
+	private function afterLoadFile(fileData:ByteArray):Void
 	{
-		data.position = 0;
-		var dataString:String = data.readUTFBytes(data.length);
-		var reproduceFile:ReproduceFile = haxe.Unserializer.run(dataString);
-		data.clear();
-		reproduce.replay(reproduceFile.reproduceLog);
+		// バイナリを文字列に変換
+		fileData.position = 0;
+		var dataString:String = fileData.readUTFBytes(fileData.length);
+		// データを解析
+		var reproduceFile:ReproduceFile = Unserializer.run(dataString);
+		var reproduceFileCopy:ReproduceFile = Unserializer.run(dataString);
+		// バイナリデータは消しておく
+		fileData.clear();
+		operationView.displayFile(reproduceFileCopy);
+		// リプレイを開始
+//			reproduce.replay(reproduceFile.reproduceLog);
 	}
 }
 /**

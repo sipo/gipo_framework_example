@@ -4,8 +4,9 @@ package jp.sipo.gipo_framework_example.scene.mock0;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo_framework_example.context.reproduce.LogicStatus.SnapshotKind;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
-import jp.sipo.gipo_framework_example.etc.Snapshot;
+import jp.sipo.gipo_framework_example.operation.Snapshot;
 import jp.sipo.gipo_framework_example.context.LogicScene;
 import jp.sipo.gipo_framework_example.context.ViewForLogic;
 import jp.sipo.gipo_framework_example.scene.mock1.Mock1;

@@ -4,7 +4,11 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
-import jp.sipo.util.Note;
+import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
+import jp.sipo.gipo_framework_example.operation.ReproduceLog;
+import flash.Vector;
+import jp.sipo.gipo_framework_example.operation.OperationLogic.ReproduceFile;
+import com.bit101.components.PushButton;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import com.bit101.components.Label;
 import com.bit101.components.ComboBox;
@@ -27,6 +31,8 @@ class OperationOverView extends GearHolderImpl implements OperationView
 	private var logCounter:Label;
 	/* 再生位置指定 */
 	private var comboBox:ComboBox;
+	/* 再生開始ボタン */
+	private var startReplayButton:PushButton;	// TODO:<<尾野>>用意
 	
 	/** コンストラクタ */
 	public function new() 
@@ -66,6 +72,7 @@ class OperationOverView extends GearHolderImpl implements OperationView
 		openUiContainer.addPushButton("SaveLog", saveLogButton_click);
 		openUiContainer.addPushButton("LoadLog", loadLogButton_click);
 		comboBox = openUiContainer.addComboBox([], comboBox_select);
+		openUiContainer.addPushButton("StartReplay", startReplayButton_click);
 		openUiContainer.addBackground(0x888888, 0.5);
 		// 初期モード
 		changeMode(Mode.Minimize);
@@ -109,19 +116,58 @@ class OperationOverView extends GearHolderImpl implements OperationView
 	{
 		hook.input(OperationHookEvent.LocalSave);
 	}
+	
 	/* 読み込みボタンをクリック */
 	private function loadLogButton_click():Void
 	{
 		hook.input(OperationHookEvent.LocalLoad);
 	}
+	
+	
+	/** 読み込んだファイルデータの表示 */
+	public function displayFile(reproduceFileCopy:ReproduceFile):Void
+	{
+		var log:ReproduceLog<ExampleUpdateKind> = reproduceFileCopy.reproduceLog;
+		// コンボボックスに入れるために、snapshotだけを取り出す
+		var snapshotList:Vector<Snapshot> = new Vector<Snapshot>();
+		for (i in 0...log.getLength())
+		{
+			var part:LogPart<Dynamic> = log.get(i);
+			// snapshotだけを配列へ
+			switch (part.logway)
+			{
+				case LogwayKind.Input(_), LogwayKind.Ready(_) : continue;
+				case LogwayKind.Snapshot(value) : snapshotList.push(value);
+			}
+		}
+		// コンボボックスの中身を変えてindexを0に
+		comboBox.removeAll();
+		for (i in 0...snapshotList.length)
+		{
+			var snapShot:Snapshot = snapshotList[i];
+			comboBox.addItem(snapShot.getDisplayName());
+		}
+		comboBox.selectedIndex = 0;
+	}
+	
 	/* 読み込みファイルを選択 */
 	private function comboBox_select(index:Int):Void
 	{
-		trace(index); // TODO:<<尾野>>Note.debug
+		trace(index);
+		// FIXME:<<尾野>>ここから
+	}
+	
+	/* 再生開始ボタンを選択 */
+	private function startReplayButton_click():Void
+	{
+		// FIXME:<<尾野>>ここから
 	}
 }
+/** 表示状態 */
 private enum Mode
 {
+	/** 最小化状態 */
 	Minimize;
+	/** メニュー表示状態 */
 	Open;
 }
