@@ -5,9 +5,13 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import haxe.ds.Option;
+import jp.sipo.gipo_framework_example.operation.OperationView.SnapshotDisplayKit;
+import jp.sipo.gipo_framework_example.operation.ReproduceLog;
+import flash.Vector;
 import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
 import jp.sipo.util.Note;
-import jp.sipo.gipo_framework_example.context.Top.TopDiffuseKey;
+import jp.sipo.gipo_framework_example.context.Top;
 import String;
 import flash.utils.ByteArray;
 import jp.sipo.gipo_framework_example.operation.ReproduceBase;
@@ -30,6 +34,9 @@ class OperationLogic extends GearHolderImpl
 	@:absorbWithKey(TopDiffuseKey.ReproduceKey)
 	private var reproduce:ReproduceBase<ExampleUpdateKind>;
 	
+	/* 最後に読み込んだログ */
+	private var loadLog:Option<Dynamic> = Option.None;
+	
 	
 	/** コンストラクタ */
 	public function new() 
@@ -51,6 +58,7 @@ class OperationLogic extends GearHolderImpl
 			}
 			case OperationHookEvent.LocalSave : localSave();
 			case OperationHookEvent.LocalLoad :  localLoad();
+			case OperationHookEvent.StartReplay(logIndex) :  startReplay(logIndex);
 		}
 	}
 	
@@ -90,10 +98,42 @@ class OperationLogic extends GearHolderImpl
 		var reproduceFileCopy:ReproduceFile = Unserializer.run(dataString);
 		// バイナリデータは消しておく
 		fileData.clear();
-		operationView.displayFile(reproduceFileCopy);
-		// リプレイを開始
-//			reproduce.replay(reproduceFile.reproduceLog);
+		// メンバ変数に保持
+		loadLog = Option.Some(reproduceFile.reproduceLog);
+		// スナップショットの配列を用意
+		var log:ReproduceLog<ExampleUpdateKind> = reproduceFileCopy.reproduceLog;
+		// コンボボックスに入れるために、snapshotだけを取り出す
+		var snapshotDisplayKitList:Vector<SnapshotDisplayKit> = new Vector<SnapshotDisplayKit>();
+		for (i in 0...log.getLength())
+		{
+			var part:LogPart<Dynamic> = log.get(i);
+			// snapshotだけを配列へ
+			switch (part.logway)
+			{
+				case LogwayKind.Input(_), LogwayKind.Ready(_) : continue;
+				case LogwayKind.Snapshot(value) : 
+				{
+					var snapshot:Snapshot = value;
+					snapshotDisplayKitList.push({logIndex:i, displayLabel:snapshot.getDisplayName()});
+				}
+			}
+		}
+		operationView.displayFile(snapshotDisplayKitList);
 	}
+	
+	/* リプレイの開始命令 */
+	private function startReplay(logIndex:Int):Void
+	{
+		var log:ReproduceLog<ExampleUpdateKind> = switch(loadLog)
+		{
+			case Option.None : throw '開始するデータがロードされていません';
+			case Option.Some(v) : v;
+		}
+		reproduce.replay(log, logIndex); // リプレイを開始
+	}
+	
+	
+	
 }
 /**
  * 保存用データ形式。後でライブラリ側に移動する

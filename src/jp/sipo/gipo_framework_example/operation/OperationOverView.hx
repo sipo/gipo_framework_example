@@ -4,6 +4,8 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import haxe.ds.Option;
+import jp.sipo.gipo_framework_example.operation.OperationView.SnapshotDisplayKit;
 import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
 import jp.sipo.gipo_framework_example.operation.ReproduceLog;
 import flash.Vector;
@@ -32,7 +34,10 @@ class OperationOverView extends GearHolderImpl implements OperationView
 	/* 再生位置指定 */
 	private var comboBox:ComboBox;
 	/* 再生開始ボタン */
-	private var startReplayButton:PushButton;	// TODO:<<尾野>>用意
+	private var startReplayButton:PushButton;
+	
+	/* Logicから渡された表示ラベルとインデックスの組 */
+	private var snapshotDisplayKitList:Vector<SnapshotDisplayKit> = new Vector<SnapshotDisplayKit>();
 	
 	/** コンストラクタ */
 	public function new() 
@@ -127,27 +132,15 @@ class OperationOverView extends GearHolderImpl implements OperationView
 	
 	
 	/** 読み込んだファイルデータの表示 */
-	public function displayFile(reproduceFileCopy:ReproduceFile):Void
+	public function displayFile(snapshotDisplayKitList:Vector<SnapshotDisplayKit>):Void
 	{
-		var log:ReproduceLog<ExampleUpdateKind> = reproduceFileCopy.reproduceLog;
-		// コンボボックスに入れるために、snapshotだけを取り出す
-		var snapshotList:Vector<Snapshot> = new Vector<Snapshot>();
-		for (i in 0...log.getLength())
-		{
-			var part:LogPart<Dynamic> = log.get(i);
-			// snapshotだけを配列へ
-			switch (part.logway)
-			{
-				case LogwayKind.Input(_), LogwayKind.Ready(_) : continue;
-				case LogwayKind.Snapshot(value) : snapshotList.push(value);
-			}
-		}
+		this.snapshotDisplayKitList = snapshotDisplayKitList;
 		// コンボボックスの中身を変えてindexを0に
 		comboBox.removeAll();
-		for (i in 0...snapshotList.length)
+		for (i in 0...snapshotDisplayKitList.length)
 		{
-			var snapShot:Snapshot = snapshotList[i];
-			comboBox.addItem(snapShot.getDisplayName());
+			var snapshotDisplayKit:SnapshotDisplayKit = snapshotDisplayKitList[i];
+			comboBox.addItem(snapshotDisplayKit.displayLabel);
 		}
 		comboBox.selectedIndex = 0;
 		comboBox.visible = true;
@@ -157,14 +150,19 @@ class OperationOverView extends GearHolderImpl implements OperationView
 	/* 読み込みファイルを選択 */
 	private function comboBox_select(index:Int):Void
 	{
-		trace(index);
-		// FIXME:<<尾野>>ここから
+		// 特に処理なし
 	}
 	
 	/* 再生開始ボタンを選択 */
 	private function startReplayButton_click():Void
 	{
-		// FIXME:<<尾野>>ここから
+		var snapshotIndex:Int = comboBox.selectedIndex;
+		// 配列サイズをチェック
+		if (snapshotDisplayKitList.length <= snapshotIndex) throw '指定された再生スナップショットがメモリ上に存在しません snapshotIndex=$snapshotIndex snapshotDisplayKitList=$snapshotDisplayKitList';
+		// comboboxで指定されているlog番号を返す
+		var kit:SnapshotDisplayKit = snapshotDisplayKitList[snapshotIndex];
+		var logIndex:Int = kit.logIndex;
+		hook.input(OperationHookEvent.StartReplay(logIndex));
 	}
 }
 /** 表示状態 */

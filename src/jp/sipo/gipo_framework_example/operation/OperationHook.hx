@@ -36,4 +36,6 @@ enum OperationHookEvent
 	LocalSave;
 	/** ローカル読み込みの指示 */
 	LocalLoad;
+	/** リプレイの開始 */
+	StartReplay(logIndex:Int);
 }

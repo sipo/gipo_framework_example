@@ -79,11 +79,10 @@ class ReproduceBase<UpdateKind> extends GearHolderImpl
 	 */
 	public function record(logway:LogwayKind):Void
 	{
-		var phaseValue:ReproducePhase<UpdateKind> = null;
-		switch(phase)
+		var phaseValue:ReproducePhase<UpdateKind> = switch(phase)
 		{
 			case Option.None : throw 'フェーズ中でなければ記録できません $phase';
-			case Option.Some(v) : phaseValue = v;
+			case Option.Some(v) : v;
 		}
 		var logPart:LogPart<UpdateKind> = new LogPart<UpdateKind>(phaseValue, frame, logway);
 		recordLog.add(Copy.deep(logPart));	// 速度を上げるためには場合分けしてもいい
@@ -101,9 +100,10 @@ class ReproduceBase<UpdateKind> extends GearHolderImpl
 	/**
 	 * 再生する
 	 */
-	public function replay(log:ReproduceLog<UpdateKind>):Void
+	public function replay(log:ReproduceLog<UpdateKind>, logIndex:Int):Void
 	{
-		note.log(log);
+		note.log('replayStart($logIndex) $log');
 		replayLog = Option.Some(log);
+		// FIXME:<<尾野>>未実装
 	}
 }
