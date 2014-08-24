@@ -38,7 +38,7 @@ class GipoFrameworkExample
 	/** コンストラクタ */
 	public function new() 
 	{
-		Note.setTags([GearNoteTag.stateChange, NoteTag.Reproduse], []);
+		Note.setTags([GearNoteTag.StateChange, NoteTag.Reproduse], []);
 		// ここから本処理の開始
 		top = new Top(Lib.current, new DevConfig());
 		top.gearOutside().initializeTop(null);
