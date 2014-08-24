@@ -1,6 +1,6 @@
-# 各種機能メモ
+各種機能メモ
 
-## Gipo dispatcher-handler
+# Gipo dispatcher-handler
 
 テンプレートパターンを使った際に発生する Call super アンチパターンを回避するためのもの。
 
@@ -10,7 +10,7 @@ super.update()を書き忘れてもエラーが出ないために非常に危険
 
 そもそもとして、overrideはあまり使用するべきではなく、テンプレートパターンはあまり良いデザインパターンだとは考えていない。
 
-### 具体例
+## 具体例
 
 dispatcherを管理する変数を用意する
 
@@ -60,13 +60,13 @@ public function sceneUpdate():Void
 }
 ```
 
-## Gipo dispatcher-handler（RedTape）
+# Gipo dispatcher-handler（RedTape）
 
 dispatcher-handlerがEnumを１つ引数に取るもの。
 
 RadTapeの語源は「お役所仕事」。指定されたEnumのみを処理するため。
 
-### 具体例
+## 具体例
 
 dispatcherを管理する変数を用意する
 
@@ -114,3 +114,8 @@ inline public function noticeEvent(command:EnumValue):Void
 複数の種類のEnumを扱うことができ、その場合渡されたEnumを持つ関数に自動的に振り分けられる。
 
 redTapeHandlerが設定されている関数が無ければエラーとなる。
+
+// todo:後で分割
+
+#Reproduce
+
