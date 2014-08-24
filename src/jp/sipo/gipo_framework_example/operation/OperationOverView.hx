@@ -72,7 +72,9 @@ class OperationOverView extends GearHolderImpl implements OperationView
 		openUiContainer.addPushButton("SaveLog", saveLogButton_click);
 		openUiContainer.addPushButton("LoadLog", loadLogButton_click);
 		comboBox = openUiContainer.addComboBox([], comboBox_select);
-		openUiContainer.addPushButton("StartReplay", startReplayButton_click);
+		comboBox.visible = false;
+		startReplayButton = openUiContainer.addPushButton("StartReplay", startReplayButton_click);
+		startReplayButton.visible = false;
 		openUiContainer.addBackground(0x888888, 0.5);
 		// 初期モード
 		changeMode(Mode.Minimize);
@@ -148,6 +150,8 @@ class OperationOverView extends GearHolderImpl implements OperationView
 			comboBox.addItem(snapShot.getDisplayName());
 		}
 		comboBox.selectedIndex = 0;
+		comboBox.visible = true;
+		startReplayButton.visible = true;
 	}
 	
 	/* 読み込みファイルを選択 */
