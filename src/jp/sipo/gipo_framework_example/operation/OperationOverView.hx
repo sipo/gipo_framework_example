@@ -4,12 +4,8 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
-import haxe.ds.Option;
 import jp.sipo.gipo_framework_example.operation.OperationView.SnapshotDisplayKit;
-import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
-import jp.sipo.gipo_framework_example.operation.ReproduceLog;
 import flash.Vector;
-import jp.sipo.gipo_framework_example.operation.OperationLogic.ReproduceFile;
 import com.bit101.components.PushButton;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import com.bit101.components.Label;

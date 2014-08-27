@@ -42,10 +42,15 @@ interface HookForLogic
 	/** Logicからのデータの構成の状態 */
 	public function logicSnapshot(snapshot:Snapshot):Void;
 }
+interface HookForReproduce
+{
+	/** イベントの実行 */
+	public function executeEvent(logWay:LogwayKind):Void;
+}
 /* ================================================================
  * 実装
  * ===============================================================*/
-class Hook extends GearHolderImpl implements HookForView implements HookForLogic
+class Hook extends GearHolderImpl implements HookForView implements HookForLogic implements HookForReproduce
 {
 	@:absorb
 	private var logic:LogicForHook;
@@ -64,12 +69,12 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 	
 	public function viewInput(command:EnumValue):Void
 	{
-		executeEvent(LogwayKind.Input(command));
+		recordEvent(LogwayKind.Input(command));
 	}
 	
 	public function viewReady(command:EnumValue):Void
 	{
-		executeEvent(LogwayKind.Ready(command));
+		recordEvent(LogwayKind.Ready(command));
 	}
 	
 	/* ================================================================
@@ -78,7 +83,7 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 	
 	public function logicSnapshot(snapshot:Snapshot):Void
 	{
-		executeEvent(LogwayKind.Snapshot(snapshot));
+		recordEvent(LogwayKind.Snapshot(snapshot));
 	}
 	
 	/* ================================================================
@@ -88,24 +93,31 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 	/**
 	 * イベントの実行を処理
 	 */
-	private function executeEvent(logWay:LogwayKind):Void
+	private function recordEvent(logWay:LogwayKind):Void
+	{
+		// 発生イベントの登録
+		reproduce.record(logWay);
+	}
+	
+	/* ================================================================
+	 * Reproduce向けのメソッド
+	 * ===============================================================*/
+	
+	/**
+	 * イベントの実行
+	 */
+	public function executeEvent(logWay:LogwayKind):Void
 	{
 		switch (logWay)
 		{
 			case LogwayKind.Input(command) :
-				// 発生イベントの登録
-				reproduce.record(logWay);
 				// イベントの実行
 				logic.noticeEvent(command);
 			case LogwayKind.Ready(command) : 
 				// TODO:readyを待つ処理
-				// 発生イベントの登録
-				reproduce.record(logWay);
 				// イベントの実行
 				logic.noticeEvent(command);
 			case LogwayKind.Snapshot(value) :
-				// 発生イベントの登録
-				reproduce.record(logWay); 
 				// イベントの実行
 				logic.setSnapshot(value);
 		}
