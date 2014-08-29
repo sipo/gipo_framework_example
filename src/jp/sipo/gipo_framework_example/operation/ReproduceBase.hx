@@ -5,9 +5,10 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo_framework_example.operation.LogPart;
 import jp.sipo.gipo_framework_example.context.Hook;
 import flash.Vector;
-import jp.sipo.gipo_framework_example.operation.ReproduceLog;
+import jp.sipo.gipo_framework_example.operation.LogWrapper;
 import GipoFrameworkExample.NoteTag;
 import jp.sipo.util.Note;
 import haxe.ds.Option;
@@ -23,17 +24,15 @@ class ReproduceBase<UpdateKind> extends GearHolderImpl
 	@:absorb
 	private var hook:HookForReproduce;
 	/* 記録ログ */
-	private var recordLog:ReproduceLog<UpdateKind> = new ReproduceLog<UpdateKind>();
+	private var recordLog:RecordLog<UpdateKind> = new RecordLog<UpdateKind>();
 	/* 記録状態 */
 	private var phase:Option<ReproducePhase<UpdateKind>> = Option.None;
 	
 	/* フレームカウント */
 	private var frame:Int = 0;
 	/* 再生ログ */
-	private var replayLog:Option<ReproduceLog<UpdateKind>> = Option.None;
+	private var replayLog:Option<ReplayLog<UpdateKind>> = Option.None;
 	
-	/* 記録・再生状態 */
-	private var mode:ReproduceMode = ReproduceMode.Record;
 	/* 再生時、次に再生するログの番号 */
 	private var replayIndex:Int = 0;
 	
@@ -76,10 +75,10 @@ class ReproduceBase<UpdateKind> extends GearHolderImpl
 		// 記録が更新されたことをOperationの表示へ通知
 		operationHook.input(OperationHookEvent.LogUpdate);
 		// 実行
-		switch(mode)
+		switch(replayLog)
 		{
-			case ReproduceMode.Record:	hook.executeEvent(logway);	// 実行する
-			case ReproduceMode.Replay:	// リプレイ時はここからのイベントは止める
+			case Option.None:	hook.executeEvent(logway);	// 実行する
+			case Option.Some(_):	// リプレイ時はここからのイベントは止める
 		}
 		
 	}
@@ -107,12 +106,12 @@ class ReproduceBase<UpdateKind> extends GearHolderImpl
 			case Option.Some(_) : // 特になし
 		}
 		// 再生状態ならここでログを再生するかチェック
-		switch(mode)
+		switch(replayLog)
 		{
-			case ReproduceMode.Record:	// 特に何もない
-			case ReproduceMode.Replay: replayLog();	// ログの再生
+			case Option.None:	// 特に何もない
+			case Option.Some(log): progressReplay(log); // ログの再生
 		}
-		// FIXME:<<尾野>>古い仕様
+		// FIXME:<<尾野>>未実装
 		// コマンド実行中にコマンドのスタックが増える可能性があるので、
 //		while(0 < phaseRecord.length)
 //		{
@@ -129,9 +128,9 @@ class ReproduceBase<UpdateKind> extends GearHolderImpl
 		phase = Option.None;
 	}
 	/* ログの再生 */
-	private function replayLog():Void
+	private function progressReplay(log:ReplayLog<UpdateKind>):Void
 	{
-		replayLog
+		trace("ok");
 	}
 	
 	/**
@@ -146,28 +145,18 @@ class ReproduceBase<UpdateKind> extends GearHolderImpl
 	/**
 	 * ログを返す
 	 */
-	public function getRecordLog():ReproduceLog<UpdateKind>
+	public function getRecordLog():RecordLog<UpdateKind>
 	{
 		return recordLog;
 	}
 	
 	/**
-	 * 再生する
+	 * 再生状態に切り替える
 	 */
-	public function replay(log:ReproduceLog<UpdateKind>, logIndex:Int):Void
+	public function startReplay(log:ReplayLog<UpdateKind>, logIndex:Int):Void
 	{
 		note.log('replayStart($logIndex) $log');
+		log.setPosition(logIndex);
 		replayLog = Option.Some(log);
-		// FIXME:<<尾野>>未実装
 	}
-}
-/**
- * 記録状態
- **/
-enum ReproduceMode
-{
-	/* 記録中 */
-	Record;
-	/* 再生中 */
-	Replay;
 }

@@ -4,7 +4,7 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
-import jp.sipo.gipo_framework_example.operation.OperationView.SnapshotDisplayKit;
+import jp.sipo.gipo_framework_example.operation.LogWrapper.DisplaySnapshot;
 import flash.Vector;
 import com.bit101.components.PushButton;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
@@ -33,7 +33,7 @@ class OperationOverView extends GearHolderImpl implements OperationView
 	private var startReplayButton:PushButton;
 	
 	/* Logicから渡された表示ラベルとインデックスの組 */
-	private var snapshotDisplayKitList:Vector<SnapshotDisplayKit> = new Vector<SnapshotDisplayKit>();
+	private var displaySnapshotList:Vector<DisplaySnapshot> = new Vector<DisplaySnapshot>();
 	
 	/** コンストラクタ */
 	public function new() 
@@ -128,15 +128,15 @@ class OperationOverView extends GearHolderImpl implements OperationView
 	
 	
 	/** 読み込んだファイルデータの表示 */
-	public function displayFile(snapshotDisplayKitList:Vector<SnapshotDisplayKit>):Void
+	public function displayFile(displaySnapshotList:Vector<DisplaySnapshot>):Void
 	{
-		this.snapshotDisplayKitList = snapshotDisplayKitList;
+		this.displaySnapshotList = displaySnapshotList;
 		// コンボボックスの中身を変えてindexを0に
 		comboBox.removeAll();
-		for (i in 0...snapshotDisplayKitList.length)
+		for (i in 0...displaySnapshotList.length)
 		{
-			var snapshotDisplayKit:SnapshotDisplayKit = snapshotDisplayKitList[i];
-			comboBox.addItem(snapshotDisplayKit.displayLabel);
+			var snapshotDisplayKit:DisplaySnapshot = displaySnapshotList[i];
+			comboBox.addItem(snapshotDisplayKit.display);
 		}
 		comboBox.selectedIndex = 0;
 		comboBox.visible = true;
@@ -154,9 +154,9 @@ class OperationOverView extends GearHolderImpl implements OperationView
 	{
 		var snapshotIndex:Int = comboBox.selectedIndex;
 		// 配列サイズをチェック
-		if (snapshotDisplayKitList.length <= snapshotIndex) throw '指定された再生スナップショットがメモリ上に存在しません snapshotIndex=$snapshotIndex snapshotDisplayKitList=$snapshotDisplayKitList';
+		if (displaySnapshotList.length <= snapshotIndex) throw '指定された再生スナップショットがメモリ上に存在しません snapshotIndex=$snapshotIndex snapshotDisplayKitList=$displaySnapshotList';
 		// comboboxで指定されているlog番号を返す
-		var kit:SnapshotDisplayKit = snapshotDisplayKitList[snapshotIndex];
+		var kit:DisplaySnapshot = displaySnapshotList[snapshotIndex];
 		var logIndex:Int = kit.logIndex;
 		hook.input(OperationHookEvent.StartReplay(logIndex));
 	}

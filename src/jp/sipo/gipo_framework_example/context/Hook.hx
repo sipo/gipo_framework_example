@@ -20,7 +20,7 @@ package jp.sipo.gipo_framework_example.context;
  * @auther sipo
  */
 
-import jp.sipo.gipo_framework_example.operation.ReproduceLog.LogwayKind;
+import jp.sipo.gipo_framework_example.operation.LogPart;
 import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
 import jp.sipo.gipo_framework_example.operation.ReproduceBase;
 import jp.sipo.gipo_framework_example.context.Top.TopDiffuseKey;

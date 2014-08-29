@@ -6,8 +6,7 @@ package jp.sipo.gipo_framework_example.operation;
  * @auther sipo
  */
 import haxe.ds.Option;
-import jp.sipo.gipo_framework_example.operation.OperationView.SnapshotDisplayKit;
-import jp.sipo.gipo_framework_example.operation.ReproduceLog;
+import jp.sipo.gipo_framework_example.operation.LogWrapper;
 import flash.Vector;
 import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
 import jp.sipo.util.Note;
@@ -35,7 +34,7 @@ class OperationLogic extends GearHolderImpl
 	private var reproduce:ReproduceBase<ExampleUpdateKind>;
 	
 	/* 最後に読み込んだログ */
-	private var loadLog:Option<Dynamic> = Option.None;
+	private var loadLog:Option<ReplayLog<ExampleUpdateKind>> = Option.None;
 	
 	
 	/** コンストラクタ */
@@ -53,7 +52,7 @@ class OperationLogic extends GearHolderImpl
 		{
 			case OperationHookEvent.LogUpdate : 
 			{
-				var reproduceLog:ReproduceLog<Dynamic> = reproduce.getRecordLog();
+				var reproduceLog:RecordLog<Dynamic> = reproduce.getRecordLog();
 				operationView.updateLog(reproduceLog.getLength());
 			}
 			case OperationHookEvent.LocalSave : localSave();
@@ -66,8 +65,8 @@ class OperationLogic extends GearHolderImpl
 	private function localSave():Void
 	{
 		var fileReference:FileReference = new FileReference();
-		var reproduceFile:ReproduceFile = {reproduceLog:reproduce.getRecordLog()};
-		var dataString:String = Serializer.run(reproduceFile);
+		var recordLog:RecordLog<ExampleUpdateKind> = reproduce.getRecordLog();
+		var dataString:String = Serializer.run(recordLog);
 		var date:Date = Date.now();
 		var milliSecond:String = StringTools.lpad(Std.string((date.getTime() % 1000)),"0",3);
 		var dateString:String = DateTools.format(date, "%Y_%m_%d_%H_%M_%S_") + milliSecond;
@@ -94,54 +93,27 @@ class OperationLogic extends GearHolderImpl
 		fileData.position = 0;
 		var dataString:String = fileData.readUTFBytes(fileData.length);
 		// データを解析
-		var reproduceFile:ReproduceFile = Unserializer.run(dataString);
-		var reproduceFileCopy:ReproduceFile = Unserializer.run(dataString);
+		var reproduceFile:RecordLog<ExampleUpdateKind> = Unserializer.run(dataString);
+		var replayLog:ReplayLog<ExampleUpdateKind> = reproduceFile.convertReplay();
 		// バイナリデータは消しておく
 		fileData.clear();
 		// メンバ変数に保持
-		loadLog = Option.Some(reproduceFile.reproduceLog);
-		// スナップショットの配列を用意
-		var log:ReproduceLog<ExampleUpdateKind> = reproduceFileCopy.reproduceLog;
+		loadLog = Option.Some(replayLog);
 		// コンボボックスに入れるために、snapshotだけを取り出す
-		var snapshotDisplayKitList:Vector<SnapshotDisplayKit> = new Vector<SnapshotDisplayKit>();
-		for (i in 0...log.getLength())
-		{
-			var part:LogPart<Dynamic> = log.get(i);
-			// snapshotだけを配列へ
-			switch (part.logway)
-			{
-				case LogwayKind.Input(_), LogwayKind.Ready(_) : continue;
-				case LogwayKind.Snapshot(value) : 
-				{
-					var snapshot:Snapshot = value;
-					snapshotDisplayKitList.push({logIndex:i, displayLabel:snapshot.getDisplayName()});
-				}
-			}
-		}
-		operationView.displayFile(snapshotDisplayKitList);
+		operationView.displayFile(replayLog.createDisplaySnapshotList());
 	}
 	
 	/* リプレイの開始命令 */
 	private function startReplay(logIndex:Int):Void
 	{
-		var log:ReproduceLog<ExampleUpdateKind> = switch(loadLog)
+		var log:ReplayLog<ExampleUpdateKind> = switch(loadLog)
 		{
 			case Option.None : throw '開始するデータがロードされていません';
 			case Option.Some(v) : v;
 		}
-		reproduce.replay(log, logIndex); // リプレイを開始
+		reproduce.startReplay(log, logIndex); // リプレイを開始
 	}
 	
 	
 	
-}
-/**
- * 保存用データ形式。後でライブラリ側に移動する
- * 
- * @author sipo
- */
-typedef ReproduceFile =
-{
-	/** log */
-	public var reproduceLog:ReproduceLog<ExampleUpdateKind>;
 }

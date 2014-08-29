@@ -5,7 +5,7 @@ package jp.sipo.gipo_framework_example.context;
  * 
  * @auther sipo
  */
-import jp.sipo.gipo_framework_example.operation.ReproduceLog.ReproducePhase;
+import jp.sipo.gipo_framework_example.operation.LogPart.ReproducePhase;
 import jp.sipo.gipo_framework_example.operation.ReproduceBase;
 import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
 import jp.sipo.gipo.core.GearHolderLow;

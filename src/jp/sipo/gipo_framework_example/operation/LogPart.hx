@@ -1,51 +1,5 @@
 package jp.sipo.gipo_framework_example.operation;
 /**
- * Log全体の定義。基本的には配列のみもつ
- * 
- * @auther sipo
- */
- 
-class ReproduceLog<UpdateKind>
-{
-	private var list = new Array<LogPart<UpdateKind>>();
-	
-	/** コンストラクタ */
-	public function new() {  }
-	
-	/**
-	 * 追加する
-	 */
-	public function add(logPart:LogPart<UpdateKind>):Void
-	{
-		list.push(logPart);
-	}
-	
-	/**
-	 * 長さを返す
-	 */
-	public function getLength():Int
-	{
-		return list.length;
-	}
-	
-	/**
-	 * 要素を１つ返す
-	 */
-	public function get(index:Int):LogPart<UpdateKind>
-	{
-		return list[index];
-	}
-	
-	/**
-	 * 文字列表現
-	 */
-	public function toString():String
-	{
-		return '[ReproduceLog $list]';
-	}
-}
-
-/**
  * Logの1単位
  * ReadOnlyにしたいところだが、データ構造が深く、処理速度の関係で断念。
  * ファイル単位で２つ作れば問題ない
