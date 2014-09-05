@@ -38,13 +38,13 @@ class GipoFrameworkExample
 	/** コンストラクタ */
 	public function new() 
 	{
-		Note.setTags([GearNoteTag.StateChange, NoteTag.Reproduse], []);
+		Note.setTags([GearNoteTag.StateChange, ExampleNoteTag.Reproduse], []);
 		// ここから本処理の開始
 		top = new Top(Lib.current, new DevConfig());
 		top.gearOutside().initializeTop(null);
 	}
 }
-enum NoteTag
+enum ExampleNoteTag
 {
-	Reproduse;
+	Reproduse;	// TODO:<<尾野>>Gipo共通へ移動
 }

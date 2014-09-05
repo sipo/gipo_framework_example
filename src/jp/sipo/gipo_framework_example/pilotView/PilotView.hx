@@ -73,6 +73,15 @@ class PilotView extends StateSwitcherGearHolderImpl<PilotViewScene> implements V
 	 * ===============================================================*/
 	
 	/**
+	 * フレーム間の更新。
+	 * 再生時に停止中でも動作するので、ここでカウントなどをしてはいけない
+	 */
+	public function meantimeUpdate():Void
+	{
+		state.meantimeUpdateDispatcher.execute();
+	}
+	
+	/**
 	 * ドラッグなどの入力状態の更新
 	 */
 	public function inputUpdate():Void

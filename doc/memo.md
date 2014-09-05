@@ -10,6 +10,16 @@ super.update()を書き忘れてもエラーが出ないために非常に危険
 
 そもそもとして、overrideはあまり使用するべきではなく、テンプレートパターンはあまり良いデザインパターンだとは考えていない。
 
+## デフォルト用意
+
+以下の３つが使用可能
+
+    @:handler(GearDispatcherKind.Diffusible)
+
+    @:handler(GearDispatcherKind.Run)
+
+    @:handler(GearDispatcherKind.Bubble)
+
 ## 具体例
 
 dispatcherを管理する変数を用意する

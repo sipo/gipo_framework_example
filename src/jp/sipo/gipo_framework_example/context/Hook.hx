@@ -22,7 +22,7 @@ package jp.sipo.gipo_framework_example.context;
 
 import jp.sipo.gipo_framework_example.operation.LogPart;
 import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
-import jp.sipo.gipo_framework_example.operation.ReproduceBase;
+import jp.sipo.gipo_framework_example.operation.Reproduce;
 import jp.sipo.gipo_framework_example.context.Top.TopDiffuseKey;
 import jp.sipo.gipo_framework_example.operation.Snapshot;
 import jp.sipo.gipo_framework_example.context.Logic.LogicForHook;
@@ -55,7 +55,7 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 	@:absorb
 	private var logic:LogicForHook;
 	@:absorbWithKey(TopDiffuseKey.ReproduceKey)
-	private var reproduce:ReproduceBase<ExampleUpdateKind>;
+	private var reproduce:Reproduce<ExampleUpdateKind>;
 	
 	/** コンストラクタ */
 	public function new() 
@@ -69,12 +69,12 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 	
 	public function viewInput(command:EnumValue):Void
 	{
-		recordEvent(LogwayKind.Input(command));
+		reproduce.noticeLog(LogwayKind.Instant(command));
 	}
 	
 	public function viewReady(command:EnumValue):Void
 	{
-		recordEvent(LogwayKind.Ready(command));
+		reproduce.noticeLog(LogwayKind.Async(command));
 	}
 	
 	/* ================================================================
@@ -83,21 +83,10 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 	
 	public function logicSnapshot(snapshot:Snapshot):Void
 	{
-		recordEvent(LogwayKind.Snapshot(snapshot));
+		// Reproduceに通知して処理を仰ぐ
+		reproduce.noticeLog(LogwayKind.Snapshot(snapshot));
 	}
 	
-	/* ================================================================
-	 * 内部処理
-	 * ===============================================================*/
-	 
-	/**
-	 * イベントの実行を処理
-	 */
-	private function recordEvent(logWay:LogwayKind):Void
-	{
-		// 発生イベントの登録
-		reproduce.record(logWay);
-	}
 	
 	/* ================================================================
 	 * Reproduce向けのメソッド
@@ -110,10 +99,10 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 	{
 		switch (logWay)
 		{
-			case LogwayKind.Input(command) :
+			case LogwayKind.Instant(command) :
 				// イベントの実行
 				logic.noticeEvent(command);
-			case LogwayKind.Ready(command) : 
+			case LogwayKind.Async(command) : 
 				// TODO:readyを待つ処理
 				// イベントの実行
 				logic.noticeEvent(command);

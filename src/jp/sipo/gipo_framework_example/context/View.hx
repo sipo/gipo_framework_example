@@ -23,6 +23,12 @@ interface View extends GearHolderLow extends ViewForLogic
 	public function setContext(viewLayer:Sprite):Void;
 	
 	/**
+	 * フレーム間の更新。
+	 * 再生時に停止中でも動作するので、ここでカウントなどをしてはいけない
+	 */
+	public function meantimeUpdate():Void;
+	
+	/**
 	 * ドラッグなどの入力状態の更新
 	 */
 	public function inputUpdate():Void;
@@ -34,6 +40,7 @@ interface View extends GearHolderLow extends ViewForLogic
 	
 	/**
 	 * 表示の更新
+	 * 動作が重くなった時に停止されるので、ここでカウントなどをしてはいけない
 	 */
 	public function draw():Void;
 }

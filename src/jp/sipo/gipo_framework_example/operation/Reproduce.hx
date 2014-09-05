@@ -5,11 +5,14 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo.core.state.StateGearHolder;
+import jp.sipo.gipo.core.state.StateSwitcherGearHolderImpl;
+import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import jp.sipo.gipo_framework_example.operation.LogPart;
 import jp.sipo.gipo_framework_example.context.Hook;
 import flash.Vector;
 import jp.sipo.gipo_framework_example.operation.LogWrapper;
-import GipoFrameworkExample.NoteTag;
+import GipoFrameworkExample.ExampleNoteTag;
 import jp.sipo.util.Note;
 import haxe.ds.Option;
 import haxe.ds.Option;
@@ -17,34 +20,45 @@ import haxe.ds.Option;
 import jp.sipo.gipo_framework_example.operation.OperationHook;
 import jp.sipo.util.Copy;
 import jp.sipo.gipo.core.GearHolderImpl;
-class ReproduceBase<UpdateKind> extends GearHolderImpl
+class Reproduce<UpdateKind> extends StateSwitcherGearHolderImpl<ReproduceState<UpdateKind>>
 {
 	@:absorb
 	private var operationHook:OperationHook;
 	@:absorb
 	private var hook:HookForReproduce;
-	/* 記録ログ */
-	private var recordLog:RecordLog<UpdateKind> = new RecordLog<UpdateKind>();
-	/* 記録状態 */
+	/* 記録フェーズ */
 	private var phase:Option<ReproducePhase<UpdateKind>> = Option.None;
 	
-	/* フレームカウント */
-	private var frame:Int = 0;
-	/* 再生ログ */
-	private var replayLog:Option<ReplayLog<UpdateKind>> = Option.None;
 	
-	/* 再生時、次に再生するログの番号 */
-	private var replayIndex:Int = 0;
-	
-	var note:Note;
-	
-	// TODO:<<尾野>>記録と再生の内部分離
+	private var note:Note;
 	
 	/** コンストラクタ */
 	public function new() 
 	{
 		super();
-		note = new Note([NoteTag.Reproduse]);
+		note = new Note([ExampleNoteTag.Reproduse]);
+	}
+	
+	@:handler(GearDispatcherKind.Run)
+	private function run():Void
+	{
+		stateSwitcherGear.changeState(new ReproduceRecord<UpdateKind>());
+	}
+	
+	/**
+	 * 再生可能かどうかを問い合わせる
+	 */
+	public function getCanProgress():Bool
+	{
+		return state.canProgress;
+	}
+	
+	/**
+	 * 更新
+	 */
+	public function update():Void
+	{
+		state.update();
 	}
 	
 	/**
@@ -60,27 +74,17 @@ class ReproduceBase<UpdateKind> extends GearHolderImpl
 	}
 	
 	/**
-	 * イベントを記録する
+	 * イベントの発生を受け取る
 	 */
-	public function record(logway:LogwayKind):Void
+	public function noticeLog(logway:LogwayKind):Void
 	{
 		var phaseValue:ReproducePhase<UpdateKind> = switch(phase)
 		{
 			case Option.None : throw 'フェーズ中でなければ記録できません $phase';
 			case Option.Some(v) : v;
 		}
-		var logPart:LogPart<UpdateKind> = new LogPart<UpdateKind>(phaseValue, frame, logway);
-		// 全体記録
-		recordLog.add(Copy.deep(logPart));	// 速度を上げるためには場合分けしてもいい
-		// 記録が更新されたことをOperationの表示へ通知
-		operationHook.input(OperationHookEvent.LogUpdate);
-		// 実行
-		switch(replayLog)
-		{
-			case Option.None:	hook.executeEvent(logway);	// 実行する
-			case Option.Some(_):	// リプレイ時はここからのイベントは止める
-		}
-		
+		// メイン処理
+		state.noticeLog(phaseValue, logway);
 	}
 	
 	// MEMO:フェーズ終了で実行されるのはリプレイの時のみで、通常動作時は、即実行される
@@ -100,45 +104,15 @@ class ReproduceBase<UpdateKind> extends GearHolderImpl
 	 */
 	public function endPhase():Void
 	{
-		switch(phase)
+		var phaseValue:ReproducePhase<UpdateKind> =switch(phase)
 		{
 			case Option.None : throw '開始していないフェーズを終了しようとしました $phase';
-			case Option.Some(_) : // 特になし
+			case Option.Some(value) : value;
 		}
-		// 再生状態ならここでログを再生するかチェック
-		switch(replayLog)
-		{
-			case Option.None:	// 特に何もない
-			case Option.Some(log): progressReplay(log); // ログの再生
-		}
-		// FIXME:<<尾野>>未実装
-		// コマンド実行中にコマンドのスタックが増える可能性があるので、
-//		while(0 < phaseRecord.length)
-//		{
-//			var tmpPhaseRecord:Vector<LogPart<UpdateKind>> = phaseRecord;
-//			// フェーズ単位のログをクリア
-//			phaseRecord = new Vector<LogPart<UpdateKind>>();
-//			for (i in 0...tmpPhaseRecord.length)
-//			{
-//				// 実行
-//				hook.executeEvent(tmpPhaseRecord[i].logway);
-//			}
-//		}
+		// メイン処理
+		state.endPhase(phaseValue);
 		// フェーズを無しに
 		phase = Option.None;
-	}
-	/* ログの再生 */
-	private function progressReplay(log:ReplayLog<UpdateKind>):Void
-	{
-		trace("ok");
-	}
-	
-	/**
-	 * 更新
-	 */
-	public function update():Void
-	{
-		frame++;
 	}
 	
 	
@@ -147,7 +121,7 @@ class ReproduceBase<UpdateKind> extends GearHolderImpl
 	 */
 	public function getRecordLog():RecordLog<UpdateKind>
 	{
-		return recordLog;
+		return state.getRecordLog();
 	}
 	
 	/**
@@ -157,6 +131,33 @@ class ReproduceBase<UpdateKind> extends GearHolderImpl
 	{
 		note.log('replayStart($logIndex) $log');
 		log.setPosition(logIndex);
-		replayLog = Option.Some(log);
+		stateSwitcherGear.changeState(new ReproduceReplay(log));
 	}
+}
+interface ReproduceState<UpdateKind> extends StateGearHolder
+{
+	/* フレームカウント */
+	public var frame(default, null):Int;
+	/* 再生可能かどうかの判定 */
+	public var canProgress(default, null):Bool;
+	
+	/**
+	 * 更新処理
+	 */
+	public function update():Void;
+	
+	/**
+	 * ログ発生の通知
+	 */
+	public function noticeLog(phaseValue:ReproducePhase<UpdateKind>, logway:LogwayKind):Void;
+	
+	/**
+	 * フェーズ終了
+	 */
+	public function endPhase(phaseValue:ReproducePhase<UpdateKind>):Void;
+	
+	/**
+	 * RecordLogを得る（記録状態の時のみ）
+	 */
+	public function getRecordLog():RecordLog<UpdateKind>;
 }

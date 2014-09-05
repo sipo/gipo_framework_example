@@ -6,7 +6,7 @@ package jp.sipo.gipo_framework_example.context;
  * @auther sipo
  */
 import jp.sipo.gipo_framework_example.operation.LogPart.ReproducePhase;
-import jp.sipo.gipo_framework_example.operation.ReproduceBase;
+import jp.sipo.gipo_framework_example.operation.Reproduce;
 import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
 import jp.sipo.gipo.core.GearHolderLow;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
@@ -35,7 +35,7 @@ class Top extends GearHolderImpl
 	private var operationLogic:OperationLogic;
 	private var operationHook:OperationHook;
 	private var operationView:OperationView;
-	private var reproduce:ReproduceBase<ExampleUpdateKind>;
+	private var reproduce:Reproduce<ExampleUpdateKind>;
 	
 	/* 全体イベントの発行 */
 	private var globalDispatcher:GlobalDispatcher;
@@ -65,7 +65,7 @@ class Top extends GearHolderImpl
 		operationHook = new OperationHook();
 		tool.bookChild(operationHook);
 		// reproduceの用意
-		reproduce = new ReproduceBase<ExampleUpdateKind>();
+		reproduce = new Reproduce<ExampleUpdateKind>();
 		tool.bookChild(reproduce);
 		// hookの用意
 		hook = new Hook();
@@ -126,7 +126,7 @@ class Top extends GearHolderImpl
 	private function run():Void
 	{
 		// reproduseの準備（このrun自体も非同期である）
-		reproduce.startPhase(ReproducePhase.Asynchronous);
+		reproduce.startPhase(ReproducePhase.Meantime);
 		// 開始
 		logic.start();
 	}
@@ -134,24 +134,30 @@ class Top extends GearHolderImpl
 	/* フレーム動作 */
 	private function frame():Void
 	{
+		// 非同期でもフレーム処理が欲しい場合の呼び出し
+		view.meantimeUpdate();
 		// 非同期状態を終了
 		reproduce.endPhase();
 		
 		// 再現状態の更新処理
 		reproduce.update();
 		
-		// inputUpdate（マウスドラッグなどの入力）
-		reproduce.startPhase(ReproducePhase.Update(ExampleUpdateKind.ViewInput));
-		view.inputUpdate();
-		reproduce.endPhase();
+		if (reproduce.getCanProgress())	// フレームの進行が可能かどうか
+		{
+			// inputUpdate（マウスドラッグなどの入力）
+			reproduce.startPhase(ReproducePhase.Update(ExampleUpdateKind.ViewInput));
+			view.inputUpdate();
+			reproduce.endPhase();
+			
+			// Logicのメイン処理
+			logic.update();
+			view.update();
+			view.draw();
+		}
 		
-		// Logicのメイン処理
-		logic.update();
-		view.update();
-		view.draw();
 		
 		// 再現状態を非同期に切り替え
-		reproduce.startPhase(ReproducePhase.Asynchronous);	// TODO:<<尾野>>メソッド名を分離してもっと楽にできるはず
+		reproduce.startPhase(ReproducePhase.Meantime);	// TODO:<<尾野>>メソッド名を分離してもっと楽にできるはず
 	}
 }
 enum TopDiffuseKey

@@ -30,14 +30,18 @@ class LogWrapper<UpdateKind>
  */
 class RecordLog<UpdateKind> extends LogWrapper<UpdateKind>
 {
+	/* Partに割り振るID */
+	private var nextId:Int = 0;
+	
 	/** コンストラクタ */
 	public function new() { super(); }
 	
 	/**
 	 * 追加する
 	 */
-	public function add(logPart:LogPart<UpdateKind>):Void
+	public function add(phase:ReproducePhase<UpdateKind>, frame:Int, logway:LogwayKind):Void
 	{
+		var logPart:LogPart<UpdateKind> = new LogPart<UpdateKind>(phase, frame, logway, nextId++);
 		list.push(logPart);
 	}
 	
@@ -67,6 +71,8 @@ class ReplayLog<UpdateKind> extends LogWrapper<UpdateKind>
 {
 	/* 再生インデックス */
 	private var position:Int = 0;
+	/* 次の再生パートのフレーム */
+	public var nextPartFrame(default, null):Int = 0;
 	/* 配列サイズ（固定のはずなので） */
 	private var length:Int = 0;
 	
@@ -75,7 +81,10 @@ class ReplayLog<UpdateKind> extends LogWrapper<UpdateKind>
 	{
 		super();
 		this.list = list;
+		// 長さをキャッシュ
 		length = list.length;
+		// 次のフレームをキャッシュ
+		checkNextFrame();
 	}
 	
 	/**
@@ -90,7 +99,7 @@ class ReplayLog<UpdateKind> extends LogWrapper<UpdateKind>
 			// snapshotだけを配列へ
 			switch (part.logway)
 			{
-				case LogwayKind.Input(_), LogwayKind.Ready(_) : continue;
+				case LogwayKind.Instant(_), LogwayKind.Async(_) : continue;
 				case LogwayKind.Snapshot(value) : 
 				{
 					var snapshot:Snapshot = value;
@@ -112,7 +121,7 @@ class ReplayLog<UpdateKind> extends LogWrapper<UpdateKind>
 	/**
 	 * 再生位置のLogが存在するかどうか
 	 */
-	public function isExist():Bool
+	public function hasNext():Bool
 	{
 		return position < length;
 	}
@@ -120,17 +129,18 @@ class ReplayLog<UpdateKind> extends LogWrapper<UpdateKind>
 	/**
 	 * 現在の位置のデータを返す
 	 */
-	public function get():LogPart<UpdateKind>
+	public function next():LogPart<UpdateKind>
 	{
-		return list[position];
+		var ans = list[position++];
+		checkNextFrame();
+		return ans;
 	}
-	
-	/**
-	 * 現在の位置を進める
-	 */
-	public function progress():Void
+	/* 次のパートのフレームを保存しておく */
+	private function checkNextFrame():Void
 	{
-		position++;
+		if (!hasNext()) return;
+		var nextPart:LogPart<UpdateKind> = list[position];
+		nextPartFrame = nextPart.frame;
 	}
 }
 

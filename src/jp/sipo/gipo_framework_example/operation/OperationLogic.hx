@@ -13,7 +13,7 @@ import jp.sipo.util.Note;
 import jp.sipo.gipo_framework_example.context.Top;
 import String;
 import flash.utils.ByteArray;
-import jp.sipo.gipo_framework_example.operation.ReproduceBase;
+import jp.sipo.gipo_framework_example.operation.Reproduce;
 import haxe.Serializer;
 import jp.sipo.util.HandlerUtil;
 import flash.events.Event;
@@ -31,7 +31,7 @@ class OperationLogic extends GearHolderImpl
 	@:absorb
 	private var operationView:OperationView;
 	@:absorbWithKey(TopDiffuseKey.ReproduceKey)
-	private var reproduce:ReproduceBase<ExampleUpdateKind>;
+	private var reproduce:Reproduce<ExampleUpdateKind>;
 	
 	/* 最後に読み込んだログ */
 	private var loadLog:Option<ReplayLog<ExampleUpdateKind>> = Option.None;
