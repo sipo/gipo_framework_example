@@ -5,6 +5,7 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo.core.GearDiffuseTool;
 import jp.sipo.gipo.core.state.StateGearHolder;
 import jp.sipo.gipo.core.state.StateSwitcherGearHolderImpl;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
@@ -38,6 +39,7 @@ class Reproduce<UpdateKind> extends StateSwitcherGearHolderImpl<ReproduceState<U
 		super();
 		note = new Note([ExampleNoteTag.Reproduse]);
 	}
+	
 	
 	@:handler(GearDispatcherKind.Run)
 	private function run():Void
@@ -109,6 +111,22 @@ class Reproduce<UpdateKind> extends StateSwitcherGearHolderImpl<ReproduceState<U
 			case Option.None : throw '開始していないフェーズを終了しようとしました $phase';
 			case Option.Some(value) : value;
 		}
+		// meanTimeの時は、ここから再生モードに移行する可能性を調べる
+		var phaseIsMeantime:Bool = switch (phaseValue)
+		{
+			case ReproducePhase.Meantime : true;
+			case ReproducePhase.Update : false;
+		}
+		if (phaseIsMeantime)
+		{
+			// 必要ならReplayへ以降
+			var stateSwitchWay:ReproduceSwitchWay<UpdateKind> = state.getChangeWay();
+			switch (stateSwitchWay)
+			{
+				case ReproduceSwitchWay.None :
+				case ReproduceSwitchWay.ToReplay(log) : stateSwitcherGear.changeState(new ReproduceReplay(log));
+			}
+		}
 		// メイン処理
 		state.endPhase(phaseValue);
 		// フェーズを無しに
@@ -138,7 +156,7 @@ interface ReproduceState<UpdateKind> extends StateGearHolder
 {
 	/* フレームカウント */
 	public var frame(default, null):Int;
-	/* 再生可能かどうかの判定 */
+	/* フレーム処理実行可能かどうかの判定 */
 	public var canProgress(default, null):Bool;
 	
 	/**
@@ -152,6 +170,11 @@ interface ReproduceState<UpdateKind> extends StateGearHolder
 	public function noticeLog(phaseValue:ReproducePhase<UpdateKind>, logway:LogwayKind):Void;
 	
 	/**
+	 * 切り替えの問い合わせ
+	 */
+	public function getChangeWay():ReproduceSwitchWay<UpdateKind>;
+	
+	/**
 	 * フェーズ終了
 	 */
 	public function endPhase(phaseValue:ReproducePhase<UpdateKind>):Void;
@@ -160,4 +183,9 @@ interface ReproduceState<UpdateKind> extends StateGearHolder
 	 * RecordLogを得る（記録状態の時のみ）
 	 */
 	public function getRecordLog():RecordLog<UpdateKind>;
+}
+enum ReproduceSwitchWay<UpdateKind>
+{
+	None;
+	ToReplay(replayLog:ReplayLog<UpdateKind>);
 }

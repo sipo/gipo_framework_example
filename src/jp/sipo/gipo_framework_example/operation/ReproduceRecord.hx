@@ -57,6 +57,13 @@ class ReproduceRecord<UpdateKind> extends StateGearHolderImpl implements Reprodu
 		hook.executeEvent(logway);
 	}
 	
+	/**
+	 * 切り替えの問い合わせ
+	 */
+	public function getChangeWay():ReproduceSwitchWay<UpdateKind>
+	{
+		return ReproduceSwitchWay.None;
+	}
 	
 	/**
 	 * フェーズ終了

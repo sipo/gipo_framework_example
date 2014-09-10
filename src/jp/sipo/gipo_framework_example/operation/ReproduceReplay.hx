@@ -128,6 +128,15 @@ class ReproduceReplay<UpdateKind> extends StateGearHolderImpl implements Reprodu
 		aheadAsyncList.push(new LogPart<UpdateKind>(phaseValue, frame, logway, -1));	// idはひとまず-1で
 	}
 	
+	
+	/**
+	 * 切り替えの問い合わせ
+	 */
+	public function getChangeWay():ReproduceSwitchWay<UpdateKind>
+	{
+		return ReproduceSwitchWay.None;
+	}
+	
 	/**
 	 * フェーズ終了
 	 */
