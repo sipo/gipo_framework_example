@@ -64,9 +64,21 @@ class Reproduce<UpdateKind> extends StateSwitcherGearHolderImpl<ReproduceState<U
 	}
 	
 	/**
-	 * フェーズ切り替え
+	 * フレーム間のフェーズ切り替え
 	 */
-	public function startPhase(nextPhase:ReproducePhase<UpdateKind>):Void
+	public function startOutFramePhase():Void
+	{
+		startPhase(ReproducePhase.OutFrame);
+	}
+	/**
+	 * フレーム内のフェーズ切り替え
+	 */
+	public function startInFramePhase(updateKind:UpdateKind):Void
+	{
+		startPhase(ReproducePhase.InFrame(updateKind));
+	}
+	/* フェーズ切り替え共通動作 */
+	private function startPhase(nextPhase:ReproducePhase<UpdateKind>):Void
 	{
 		switch(phase)
 		{
@@ -74,6 +86,8 @@ class Reproduce<UpdateKind> extends StateSwitcherGearHolderImpl<ReproduceState<U
 			case Option.Some(v) : throw '前回のフェーズが終了していません $v->$nextPhase';
 		}
 	}
+	
+	
 	
 	/**
 	 * イベントの発生を受け取る
@@ -112,12 +126,12 @@ class Reproduce<UpdateKind> extends StateSwitcherGearHolderImpl<ReproduceState<U
 			case Option.Some(value) : value;
 		}
 		// meanTimeの時は、ここから再生モードに移行する可能性を調べる
-		var phaseIsMeantime:Bool = switch (phaseValue)
+		var phaseIsOutFrame:Bool = switch (phaseValue)
 		{
-			case ReproducePhase.Meantime : true;
-			case ReproducePhase.Update : false;
+			case ReproducePhase.OutFrame : true;
+			case ReproducePhase.InFrame : false;
 		}
-		if (phaseIsMeantime)
+		if (phaseIsOutFrame)
 		{
 			// 必要ならReplayへ以降
 			var stateSwitchWay:ReproduceSwitchWay<UpdateKind> = state.getChangeWay();

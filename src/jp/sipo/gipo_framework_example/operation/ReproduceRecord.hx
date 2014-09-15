@@ -48,7 +48,7 @@ class ReproduceRecord<UpdateKind> extends StateGearHolderImpl implements Reprodu
 	public function noticeLog(phaseValue:ReproducePhase<UpdateKind>, logway:LogwayKind):Void
 	{
 		// 非同期イベントが、updatePhase内で発生したら警告
-		if (LogPart.isAsyncLogway(logway) && !LogPart.isMeantimePhase(phaseValue)) throw "非同期イベントは、updateタイミングで発生してはいけません。（再現時の待機に問題が出るため）。meantimeUpdate等の関数で発生するようにしてください。";
+		if (LogPart.isAsyncLogway(logway) && !LogPart.isOutFramePhase(phaseValue)) throw "非同期イベントは、updateタイミングで発生してはいけません。（再現時の待機に問題が出るため）。meantimeUpdate等の関数で発生するようにしてください。";
 		// 記録に追加
 		recordLog.add(phaseValue, frame, logway);
 		// 記録が更新されたことをOperationの表示へ通知

@@ -126,7 +126,7 @@ class Top extends GearHolderImpl
 	private function run():Void
 	{
 		// reproduseの準備（このrun自体も非同期である）
-		reproduce.startPhase(ReproducePhase.Meantime);
+		reproduce.startOutFramePhase();
 		// 開始
 		logic.start();
 	}
@@ -135,8 +135,8 @@ class Top extends GearHolderImpl
 	private function frame():Void
 	{
 		// 非同期でもフレーム処理が欲しい場合の呼び出し
-		view.meantimeUpdate();
-		// 非同期状態を終了
+		view.asyncUpdate();
+		// フレーム内状態を終了
 		reproduce.endPhase();
 		
 		// 再現状態の更新処理
@@ -145,7 +145,7 @@ class Top extends GearHolderImpl
 		if (reproduce.getCanProgress())	// フレームの進行が可能かどうか
 		{
 			// inputUpdate（マウスドラッグなどの入力）
-			reproduce.startPhase(ReproducePhase.Update(ExampleUpdateKind.ViewInput));
+			reproduce.startInFramePhase(ExampleUpdateKind.ViewInput);
 			view.inputUpdate();
 			reproduce.endPhase();
 			
@@ -156,8 +156,8 @@ class Top extends GearHolderImpl
 		}
 		
 		
-		// 再現状態を非同期に切り替え
-		reproduce.startPhase(ReproducePhase.Meantime);	// TODO:<<尾野>>メソッド名を分離してもっと楽にできるはず
+		// 再現状態をフレーム外へ切り替え
+		reproduce.startOutFramePhase();
 	}
 }
 enum TopDiffuseKey

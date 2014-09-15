@@ -60,14 +60,14 @@ class LogPart<UpdateKind>
 	}
 	
 	/**
-	 * 対象のPhaseがMeantimeかどうか判別する
+	 * 対象のPhaseがフレーム外かどうか判別する
 	 */
-	public static inline function isMeantimePhase<UpdateKind>(phase:ReproducePhase<UpdateKind>):Bool
+	public static inline function isOutFramePhase<UpdateKind>(phase:ReproducePhase<UpdateKind>):Bool
 	{
 		return switch(phase)
 		{
-			case ReproducePhase.Meantime : true;
-			case ReproducePhase.Update(_): false;
+			case ReproducePhase.OutFrame : true;
+			case ReproducePhase.InFrame(_): false;
 		}
 	}
 }
@@ -79,9 +79,9 @@ class LogPart<UpdateKind>
 enum ReproducePhase<UpdateKind>
 {
 	/** フレームとフレームの間で発生する。ユーザー入力やロード待ちなどほとんどがこれ */
-	Meantime;
+	OutFrame;
 	/** Updateタイミングで発生するもの。ドラッグなど */
-	Update(kind:UpdateKind);
+	InFrame(kind:UpdateKind);
 }
 /**
  * Logの記録と再生方法の種類

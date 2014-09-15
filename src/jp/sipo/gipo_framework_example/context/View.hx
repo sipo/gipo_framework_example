@@ -24,9 +24,9 @@ interface View extends GearHolderLow extends ViewForLogic
 	
 	/**
 	 * フレーム間の更新。
-	 * 再生時に停止中でも動作するので、ここでカウントなどをしてはいけない
+	 * 処理停止中でも動作するので、この関数の階数に依存した処理をしてはいけない
 	 */
-	public function meantimeUpdate():Void;
+	public function asyncUpdate():Void;
 	
 	/**
 	 * ドラッグなどの入力状態の更新

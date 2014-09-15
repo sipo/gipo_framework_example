@@ -19,7 +19,7 @@ class PilotViewScene extends StateGearHolderImpl implements ViewSceneOrder
 	@:absorb
 	private var hook:HookForView;
 	/** フレーム間の更新 */
-	public var meantimeUpdateDispatcher(default, null):GearDispatcher;
+	public var asyncUpdateDispatcher(default, null):GearDispatcher;
 	/** ドラッグなどの入力状態の更新 */
 	public var updateDispatcher(default, null):GearDispatcher;
 	/** 情報やカウンタの更新 */
@@ -31,7 +31,7 @@ class PilotViewScene extends StateGearHolderImpl implements ViewSceneOrder
 	public function new() 
 	{
 		super();
-		meantimeUpdateDispatcher = gear.dispatcher(AddBehaviorPreset.addTail, false, PilotViewSceneDispatcherKind.MeantimeUpdate);
+		asyncUpdateDispatcher = gear.dispatcher(AddBehaviorPreset.addTail, false, PilotViewSceneDispatcherKind.AsyncUpdate);
 		updateDispatcher = gear.dispatcher(AddBehaviorPreset.addTail, false, PilotViewSceneDispatcherKind.Update);
 		inputUpdateDispatcher = gear.dispatcher(AddBehaviorPreset.addTail, false, PilotViewSceneDispatcherKind.InputUpdate);
 		drawDispatcher = gear.dispatcher(AddBehaviorPreset.addTail, false, PilotViewSceneDispatcherKind.Draw);
@@ -41,7 +41,7 @@ class PilotViewScene extends StateGearHolderImpl implements ViewSceneOrder
 enum PilotViewSceneDispatcherKind
 {
 	/** フレーム間の更新 */
-	MeantimeUpdate;
+	AsyncUpdate;
 	/** ドラッグなどの入力状態の更新 */
 	Update;
 	/** 情報やカウンタの更新 */
