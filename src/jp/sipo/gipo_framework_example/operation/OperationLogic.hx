@@ -34,7 +34,7 @@ class OperationLogic extends GearHolderImpl
 	private var reproduce:Reproduce<ExampleUpdateKind>;
 	
 	/* 最後に読み込んだログ */
-	private var loadLog:Option<ReplayLog<ExampleUpdateKind>> = Option.None;
+	private var loadFile:Option<RecordLog<ExampleUpdateKind>> = Option.None;
 	
 	
 	/** コンストラクタ */
@@ -98,7 +98,7 @@ class OperationLogic extends GearHolderImpl
 		// バイナリデータは消しておく
 		fileData.clear();
 		// メンバ変数に保持
-		loadLog = Option.Some(replayLog);
+		loadFile = Option.Some(reproduceFile);
 		// コンボボックスに入れるために、snapshotだけを取り出す
 		operationView.displayFile(replayLog.createDisplaySnapshotList());
 	}
@@ -106,12 +106,13 @@ class OperationLogic extends GearHolderImpl
 	/* リプレイの開始命令 */
 	private function startReplay(logIndex:Int):Void
 	{
-		var log:ReplayLog<ExampleUpdateKind> = switch(loadLog)
+		var reproduceFile:RecordLog<ExampleUpdateKind> = switch(loadFile)
 		{
 			case Option.None : throw '開始するデータがロードされていません';
 			case Option.Some(v) : v;
 		}
-		reproduce.startReplay(log, logIndex); // リプレイを開始
+		// リプレイを開始
+		reproduce.startReplay(reproduceFile.convertReplay(), logIndex); 
 	}
 	
 	

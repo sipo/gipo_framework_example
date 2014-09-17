@@ -65,6 +65,10 @@ class ReproduceReplay<UpdateKind> extends StateGearHolderImpl implements Reprodu
 			if (nextLogPartList.length != 0) throw '解消されていないLogPartが残っています $nextLogPartList';
 			// 実行可能ならフレームを進める
 			frame++;
+//			if (frame == 70)
+//			{
+//				trace('frame 70');
+//			}
 			// 発生するイベントをリストアップする
 			// このフレームで実行されるパートを取り出す
 			var isYet:Bool = false;

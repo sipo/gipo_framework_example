@@ -116,6 +116,7 @@ class ReplayLog<UpdateKind> extends LogWrapper<UpdateKind>
 	public function setPosition(position:Int):Void
 	{
 		this.position = position;
+		checkNextFrame();
 	}
 	
 	/**
