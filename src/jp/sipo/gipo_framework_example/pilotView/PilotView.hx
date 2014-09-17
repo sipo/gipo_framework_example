@@ -5,6 +5,8 @@ package jp.sipo.gipo_framework_example.pilotView;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo_framework_example.scene.mock2.Mock2ReadyPilotView;
+import jp.sipo.gipo_framework_example.scene.mock2.Mock2PilotView;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import jp.sipo.gipo_framework_example.scene.mock1.Mock1PilotView;
 import jp.sipo.gipo_framework_example.scene.mock0.Mock0PilotView;
@@ -64,6 +66,8 @@ class PilotView extends StateSwitcherGearHolderImpl<PilotViewScene> implements V
 		{
 			case ViewSceneKind.Mock0Scene : return new Mock0PilotView();
 			case ViewSceneKind.Mock1Scene(peek) : return new Mock1PilotView(peek);
+			case ViewSceneKind.Mock2Scene : return new Mock2PilotView();
+			case ViewSceneKind.Mock2ReadyScene : return new Mock2ReadyPilotView();
 			case ViewSceneKind.BlankScene : return new BlankPilotView();
 		}
 	}

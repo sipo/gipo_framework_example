@@ -72,7 +72,7 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 		reproduce.noticeLog(LogwayKind.Instant(command));
 	}
 	
-	public function viewReady(command:EnumValue):Void
+	public function viewReady(command:EnumValue):Void	// TODO:<<尾野>>名称変更
 	{
 		reproduce.noticeLog(LogwayKind.Async(command));
 	}

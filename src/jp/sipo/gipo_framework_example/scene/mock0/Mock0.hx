@@ -4,6 +4,8 @@ package jp.sipo.gipo_framework_example.scene.mock0;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo_framework_example.scene.mock2.Mock2Ready;
+import jp.sipo.gipo_framework_example.scene.mock2.Mock2;
 import jp.sipo.gipo_framework_example.context.reproduce.LogicStatus.SnapshotKind;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import jp.sipo.gipo_framework_example.operation.Snapshot;
@@ -19,6 +21,7 @@ enum Mock0Input
 {
 	DemoDisplayButton;
 	DemoChangeSceneButton;
+	DemoAsyncSceneButton;
 }
 /** 命令 */
 interface Mock0ViewOrder
@@ -53,6 +56,7 @@ class Mock0 extends LogicScene
 		{
 			case Mock0Input.DemoDisplayButton: input_demoTraceButton();
 			case Mock0Input.DemoChangeSceneButton: input_demoChangeSceneButton();
+			case Mock0Input.DemoAsyncSceneButton: input_demoAsyncSceneButton();
 		}
 	}
 	
@@ -67,5 +71,11 @@ class Mock0 extends LogicScene
 	{
 		// スナップショットを取りつつ移動
 		logic.snapshotEvent(SnapshotKind.Mock1);
+	}
+	
+	/* 非同期テストボタンのクリック */
+	private function input_demoAsyncSceneButton():Void
+	{
+		logic.changeState(new Mock2Ready());
 	}
 }

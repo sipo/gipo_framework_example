@@ -37,4 +37,6 @@ enum ViewSceneKind
 	
 	Mock0Scene;
 	Mock1Scene(peek:Mock1ViewPeek);
+	Mock2ReadyScene;
+	Mock2Scene;
 }
