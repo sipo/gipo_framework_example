@@ -126,6 +126,7 @@ class ReproduceReplay<UpdateKind> extends StateGearHolderImpl implements Reprodu
 		}
 		// 相殺出来なかった場合は、aheadリストへ追加
 		aheadAsyncList.push(new LogPart<UpdateKind>(phaseValue, frame, logway, -1));	// idはひとまず-1で
+		// TODO:<<尾野>>余計なイベントが発生した場合、aheadに溜め込まれてしまう問題があるので、対策を検討
 	}
 	
 	
