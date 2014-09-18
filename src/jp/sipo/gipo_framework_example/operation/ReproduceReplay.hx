@@ -4,6 +4,7 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo.core.GearDiffuseTool;
 import Type;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import jp.sipo.gipo_framework_example.context.Hook;
@@ -32,7 +33,10 @@ class ReproduceReplay<UpdateKind> extends StateGearHolderImpl implements Reprodu
 	private var aheadAsyncList:Vector<LogPart<UpdateKind>> = new Vector<LogPart<UpdateKind>>();
 	/* 非同期処理のうちフレーム処理が先に来たが、通知がまだであるもののリスト */
 	private var yetAsyncList:Vector<LogPart<UpdateKind>> = new Vector<LogPart<UpdateKind>>();
+	/* 再現の終了状態 */
+	private var isEnd:Bool = false;
 	
+	@:absorb
 	private var note:Note;
 	
 	/** コンストラクタ */
@@ -42,10 +46,11 @@ class ReproduceReplay<UpdateKind> extends StateGearHolderImpl implements Reprodu
 		this.replayLog = replayLog;
 	}
 	
+	
 	@:handler(GearDispatcherKind.Run)
 	private function run():Void
 	{
-		note = new Note([ExampleNoteTag.Reproduse]);
+		note.log('再現の開始');
 		replayLog.setPosition(0);
 		// 起動時処理を擬似再現
 		// FIXME:<<尾野>>タイミングが不安定なので、Reproduceにもらう
@@ -59,16 +64,13 @@ class ReproduceReplay<UpdateKind> extends StateGearHolderImpl implements Reprodu
 	 */
 	public function update():Void
 	{
+		if (isEnd) return;
 		if (canProgress)
 		{
 			// ここに来た時は前フレームのリストは全て解消されているはず
 			if (nextLogPartList.length != 0) throw '解消されていないLogPartが残っています $nextLogPartList';
 			// 実行可能ならフレームを進める
 			frame++;
-//			if (frame == 70)
-//			{
-//				trace('frame 70');
-//			}
 			// 発生するイベントをリストアップする
 			// このフレームで実行されるパートを取り出す
 			var isYet:Bool = false;
@@ -85,6 +87,7 @@ class ReproduceReplay<UpdateKind> extends StateGearHolderImpl implements Reprodu
 					// 相殺できなければ待機リストへ追加
 					if (!setoff)
 					{
+						note.log('非同期イベントの発生が再現イベントタイミングより先に到達しました $part');
 						yetAsyncList.push(part);
 						isYet = true;
 					}
@@ -105,6 +108,7 @@ class ReproduceReplay<UpdateKind> extends StateGearHolderImpl implements Reprodu
 			var target:LogPart<UpdateKind> = list[i];
 			if (target.isSameParam(phaseValue, logway))
 			{
+				note.log('非同期イベントが待機リストと相殺して解決しました $target');
 				list.splice(i, 1);	// リストから削除
 				return true;
 			}
@@ -129,8 +133,10 @@ class ReproduceReplay<UpdateKind> extends StateGearHolderImpl implements Reprodu
 			if (setoff) return;
 		}
 		// 相殺出来なかった場合は、aheadリストへ追加
+		note.log('非同期イベントの再現が実際の発生より先に到達しました。動作を待機して非同期イベントを待ちます。 $phaseValue $logway');
 		aheadAsyncList.push(new LogPart<UpdateKind>(phaseValue, frame, logway, -1));	// idはひとまず-1で
-		// TODO:<<尾野>>余計なイベントが発生した場合、aheadに溜め込まれてしまう問題があるので、対策を検討
+		// TODO:<<尾野>>余計なイベントが発生した場合、aheadに溜め込まれてしまう問題があるので、対策を検討→複数の同じイベントがAheadに入ったら警告
+		// TODO:<<尾野>>partが引き起こされた箇所がわかるほうがデバッグしやすい
 	}
 	
 	
@@ -156,6 +162,12 @@ class ReproduceReplay<UpdateKind> extends StateGearHolderImpl implements Reprodu
 			if (!Type.enumEq(part.phase, phaseValue)) break;
 			hook.executeEvent(part.logway);
 			nextLogPartList.shift();
+			// 終了のチェック
+			if (nextLogPartList.length == 0 && !replayLog.hasNext())
+			{
+				isEnd = true;
+				note.log('再現が終了しました');
+			}
 		}
 	}
 	

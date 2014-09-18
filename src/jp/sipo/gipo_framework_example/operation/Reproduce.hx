@@ -37,9 +37,14 @@ class Reproduce<UpdateKind> extends StateSwitcherGearHolderImpl<ReproduceState<U
 	public function new() 
 	{
 		super();
-		note = new Note([ExampleNoteTag.Reproduse]);
 	}
 	
+	@:handler(GearDispatcherKind.Diffusible)
+	private function diffusible(tool:GearDiffuseTool):Void
+	{
+		note = new Note([ExampleNoteTag.Reproduse]);
+		tool.diffuse(note, Note);
+	}
 	
 	@:handler(GearDispatcherKind.Run)
 	private function run():Void

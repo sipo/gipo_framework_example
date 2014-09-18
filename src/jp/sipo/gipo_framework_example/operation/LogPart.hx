@@ -6,6 +6,7 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @author sipo
  */
+import haxe.PosInfos;
 class LogPart<UpdateKind>
 {
 	/** 再現フェーズ */
@@ -24,14 +25,6 @@ class LogPart<UpdateKind>
 		this.frame = frame;
 		this.logway = logway;
 		this.id = id;
-	}
-	
-	/**
-	 * 文字列表現
-	 */
-	public function toString():String
-	{
-		return '[LogPart phase=$phase frame=$frame logway=$logway]';
 	}
 	
 	/**
@@ -69,6 +62,14 @@ class LogPart<UpdateKind>
 			case ReproducePhase.OutFrame : true;
 			case ReproducePhase.InFrame(_): false;
 		}
+	}
+	
+	/**
+	 * 文字列表現
+	 */
+	public function toString():String
+	{
+		return '[LogPart $frame logway=$logway phase=$phase id=$id]';
 	}
 }
 /**
