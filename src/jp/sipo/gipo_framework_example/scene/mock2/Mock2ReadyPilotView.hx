@@ -64,7 +64,7 @@ class Mock2ReadyPilotView extends PilotViewScene implements Mock2ReadyViewOrder
 	{
 		asyncCount++;
 		drawAsyncLabel();
-		if (asyncCountMax == asyncCount) hook.viewReady(Mock2ReadyInput.CompleteReady);
+		if (asyncCountMax == asyncCount) hook.viewAsyncInput(Mock2ReadyInput.CompleteReady);
 	}
 	
 	@:handler(PilotViewSceneDispatcherKind.Update)

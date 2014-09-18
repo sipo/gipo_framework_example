@@ -48,19 +48,19 @@ class Mock0PilotView extends PilotViewScene implements Mock0ViewOrder
 	/* 反応テスト */
 	private function demoDisplayButton_click():Void
 	{
-		hook.viewInput(Mock0Input.DemoDisplayButton);
+		hook.viewInstantInput(Mock0Input.DemoDisplayButton);
 	}
 	
 	/* 遷移テスト */
 	private function demoChangeSceneButton_click():Void
 	{
-		hook.viewInput(Mock0Input.DemoChangeSceneButton);
+		hook.viewInstantInput(Mock0Input.DemoChangeSceneButton);
 	}
 	
 	/* 非同期テスト */
 	private function demoAsyncSceneButton_click():Void
 	{
-		hook.viewInput(Mock0Input.DemoAsyncSceneButton);
+		hook.viewInstantInput(Mock0Input.DemoAsyncSceneButton);
 	}
 	
 	/* ================================================================

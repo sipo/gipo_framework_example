@@ -33,9 +33,9 @@ import jp.sipo.gipo.core.GearHolderImpl;
 interface HookForView
 {
 	/** Viewからの即時発行できる入力イベント */
-	public function viewInput(command:EnumValue):Void;
+	public function viewInstantInput(command:EnumValue):Void;
 	/** Viewからの非同期に発生するイベント */
-	public function viewReady(command:EnumValue):Void;
+	public function viewAsyncInput(command:EnumValue):Void;
 }
 interface HookForLogic
 {
@@ -67,12 +67,12 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 	 * View向けのメソッド
 	 * ===============================================================*/
 	
-	public function viewInput(command:EnumValue):Void
+	public function viewInstantInput(command:EnumValue):Void
 	{
 		reproduce.noticeLog(LogwayKind.Instant(command));
 	}
 	
-	public function viewReady(command:EnumValue):Void	// TODO:<<尾野>>名称変更
+	public function viewAsyncInput(command:EnumValue):Void
 	{
 		reproduce.noticeLog(LogwayKind.Async(command));
 	}
