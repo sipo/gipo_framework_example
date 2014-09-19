@@ -4,6 +4,7 @@ package jp.sipo.gipo_framework_example.scene.mock2;
  * 
  * @auther sipo
  */
+import haxe.PosInfos;
 import jp.sipo.gipo_framework_example.scene.mock2.Mock2Ready;
 import jp.sipo.gipo_framework_example.scene.mock2.Mock2;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
@@ -31,7 +32,10 @@ class Mock2ReadyPilotView extends PilotViewScene implements Mock2ReadyViewOrder
 	private var asyncCountMax:Int = 0;
 	
 	/** コンストラクタ */
-	public function new() { super(); }
+	public function new() 
+	{
+		super();
+	}
 	
 	@:handler(GearDispatcherKind.Run)
 	private function run():Void
@@ -64,7 +68,12 @@ class Mock2ReadyPilotView extends PilotViewScene implements Mock2ReadyViewOrder
 	{
 		asyncCount++;
 		drawAsyncLabel();
-		if (asyncCountMax == asyncCount) hook.viewAsyncInput(Mock2ReadyInput.CompleteReady);
+		if (asyncCountMax == asyncCount)
+		{
+			// 仮想的なロードが終わったらそれを通知する。
+			// イベントの要因Posについては、このシーンに切り替わったことが要因になるため、シーン変更の要因位置をそのまま流用する。
+			hook.viewAsyncInput(Mock2ReadyInput.CompleteReady, factorPos);
+		}
 	}
 	
 	@:handler(PilotViewSceneDispatcherKind.Update)

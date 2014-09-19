@@ -7,6 +7,7 @@ package jp.sipo.gipo_framework_example.context;
  * 
  * @auther sipo
  */
+import haxe.PosInfos;
 import jp.sipo.gipo_framework_example.context.reproduce.LogicStatus;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import jp.sipo.gipo_framework_example.scene.mock1.Mock1;
@@ -57,16 +58,16 @@ class Logic extends StateSwitcherGearHolderImpl<LogicScene> implements LogicForH
 	 * スナップショットを使用するイベントを起動する
 	 * Stateの切り替わりがある場合、このsnapshotEventで自動的に発動する
 	 */
-	public function snapshotEvent(kind:SnapshotKind):Void
+	public function snapshotEvent(kind:SnapshotKind, ?pos:PosInfos):Void
 	{
-		hook.logicSnapshot(new SnapshotImpl(kind, logicStatus));
+		hook.logicSnapshot(new SnapshotImpl(kind, logicStatus), pos);
 	}
 	
 	/* ================================================================
 	 * hookに対する定義
 	 * ===============================================================*/
 	
-	public function noticeEvent(command:EnumValue):Void
+	public function noticeEvent(command:EnumValue, factorPos:PosInfos):Void
 	{
 		if (Std.is(command, LogicCommonEvent)){
 			throw "未設定";	// TODO:stb
@@ -75,7 +76,7 @@ class Logic extends StateSwitcherGearHolderImpl<LogicScene> implements LogicForH
 		}
 	}
 	
-	public function setSnapshot(snapshot:Snapshot):Void
+	public function setSnapshot(snapshot:Snapshot, factorPos:PosInfos):Void
 	{
 		var snapshotImpl:SnapshotImpl = cast(snapshot, SnapshotImpl);
 		// logicStatusの反映
@@ -95,9 +96,9 @@ class Logic extends StateSwitcherGearHolderImpl<LogicScene> implements LogicForH
 interface LogicForHook
 {
 	/** イベントの発生 */
-	public function noticeEvent(command:EnumValue):Void;
+	public function noticeEvent(command:EnumValue, factorPos:PosInfos):Void;
 	/** スナップショットの適用 */
-	public function setSnapshot(snapshot:Snapshot):Void;
+	public function setSnapshot(snapshot:Snapshot, factorPos:PosInfos):Void;
 }
 /**
  * 全体で共通のViewの入力種類

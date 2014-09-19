@@ -4,6 +4,7 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import haxe.PosInfos;
 import jp.sipo.gipo.core.state.StateGearHolderImpl;
 import jp.sipo.gipo_framework_example.context.Hook;
 import jp.sipo.gipo_framework_example.operation.OperationHook;
@@ -45,16 +46,16 @@ class ReproduceRecord<UpdateKind> extends StateGearHolderImpl implements Reprodu
 	/**
 	 * ログ発生の通知
 	 */
-	public function noticeLog(phaseValue:ReproducePhase<UpdateKind>, logway:LogwayKind):Void
+	public function noticeLog(phaseValue:ReproducePhase<UpdateKind>, logway:LogwayKind, factorPos:PosInfos):Void
 	{
 		// 非同期イベントが、updatePhase内で発生したら警告
 		if (LogPart.isAsyncLogway(logway) && !LogPart.isOutFramePhase(phaseValue)) throw "非同期イベントは、updateタイミングで発生してはいけません。（再現時の待機に問題が出るため）。meantimeUpdate等の関数で発生するようにしてください。";
 		// 記録に追加
-		recordLog.add(phaseValue, frame, logway);
+		recordLog.add(phaseValue, frame, logway, factorPos);
 		// 記録が更新されたことをOperationの表示へ通知
 		operationHook.input(OperationHookEvent.LogUpdate);
 		// 実行する
-		hook.executeEvent(logway);
+		hook.executeEvent(logway, factorPos);
 	}
 	
 	/**

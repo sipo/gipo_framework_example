@@ -4,6 +4,8 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import haxe.PosInfos;
+import haxe.ds.EnumValueMap;
 import jp.sipo.gipo.core.GearDiffuseTool;
 import Type;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
@@ -54,7 +56,6 @@ class ReproduceReplay<UpdateKind> extends StateGearHolderImpl implements Reprodu
 		replayLog.setPosition(0);
 		// 起動時処理を擬似再現
 		// FIXME:<<尾野>>タイミングが不安定なので、Reproduceにもらう
-		// FIXME:<<尾野>>状況のNote表示
 		frame = -1;
 		update();
 	}
@@ -120,7 +121,7 @@ class ReproduceReplay<UpdateKind> extends StateGearHolderImpl implements Reprodu
 	/**
 	 * ログ発生の通知
 	 */
-	public function noticeLog(phaseValue:ReproducePhase<UpdateKind>, logway:LogwayKind):Void
+	public function noticeLog(phaseValue:ReproducePhase<UpdateKind>, logway:LogwayKind, factorPos:PosInfos):Void
 	{
 		// 非同期でなければ何もしない
 		if (!LogPart.isAsyncLogway(logway)) return;
@@ -134,9 +135,8 @@ class ReproduceReplay<UpdateKind> extends StateGearHolderImpl implements Reprodu
 		}
 		// 相殺出来なかった場合は、aheadリストへ追加
 		note.log('非同期イベントの再現が実際の発生より先に到達しました。動作を待機して非同期イベントを待ちます。 $phaseValue $logway');
-		aheadAsyncList.push(new LogPart<UpdateKind>(phaseValue, frame, logway, -1));	// idはひとまず-1で
+		aheadAsyncList.push(new LogPart<UpdateKind>(phaseValue, frame, logway, -1, factorPos));	// idはひとまず-1で
 		// TODO:<<尾野>>余計なイベントが発生した場合、aheadに溜め込まれてしまう問題があるので、対策を検討→複数の同じイベントがAheadに入ったら警告
-		// TODO:<<尾野>>partが引き起こされた箇所がわかるほうがデバッグしやすい
 	}
 	
 	
@@ -160,7 +160,7 @@ class ReproduceReplay<UpdateKind> extends StateGearHolderImpl implements Reprodu
 			var part:LogPart<UpdateKind> = nextLogPartList[0];
 			// phaseが一致しているもののみ
 			if (!Type.enumEq(part.phase, phaseValue)) break;
-			hook.executeEvent(part.logway);
+			hook.executeEvent(part.logway, part.factorPos);
 			nextLogPartList.shift();
 			// 終了のチェック
 			if (nextLogPartList.length == 0 && !replayLog.hasNext())

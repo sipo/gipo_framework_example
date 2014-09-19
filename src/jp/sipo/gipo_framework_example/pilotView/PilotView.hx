@@ -5,6 +5,7 @@ package jp.sipo.gipo_framework_example.pilotView;
  * 
  * @auther sipo
  */
+import haxe.PosInfos;
 import jp.sipo.gipo_framework_example.scene.mock2.Mock2ReadyPilotView;
 import jp.sipo.gipo_framework_example.scene.mock2.Mock2PilotView;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
@@ -54,10 +55,15 @@ class PilotView extends StateSwitcherGearHolderImpl<PilotViewScene> implements V
 	 * ===============================================================*/
 	
 	/** シーンの変更を依頼する */
-	public function changeScene(sceneKind:ViewSceneKind):ViewSceneOrder
+	public function changeScene(sceneKind:ViewSceneKind, factorPos:PosInfos):ViewSceneOrder
 	{
+		// enumに対応するシーンを呼び出し
 		var scene:PilotViewScene = getScene(sceneKind);
+		// 原因となったコード位置を、デバッグのために渡しておく
+		scene.setFactorPos(factorPos);
+		// シーン変更の実行
 		stateSwitcherGear.changeState(scene);
+		// 命令を受け付けるためにシーンを返してやる
 		return scene;
 	}
 	private function getScene(sceneKind:ViewSceneKind):PilotViewScene

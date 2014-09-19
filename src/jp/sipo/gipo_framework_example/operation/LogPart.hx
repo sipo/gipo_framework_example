@@ -17,14 +17,17 @@ class LogPart<UpdateKind>
 	public var logway:LogwayKind;
 	/** 通し番号 */
 	public var id:Int;
+	/** 要因となったコードの場所情報 */
+	public var factorPos:PosInfos;
 	
 	/** コンストラクタ */
-	public function new(phase:ReproducePhase<UpdateKind>, frame:Int, logway:LogwayKind, id:Int) 
+	public function new(phase:ReproducePhase<UpdateKind>, frame:Int, logway:LogwayKind, id:Int, factorPos:PosInfos) 
 	{
 		this.phase = phase;
 		this.frame = frame;
 		this.logway = logway;
 		this.id = id;
+		this.factorPos = factorPos;
 	}
 	
 	/**

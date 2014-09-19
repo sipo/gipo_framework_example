@@ -4,6 +4,7 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import haxe.PosInfos;
 import Type;
 import jp.sipo.gipo_framework_example.operation.LogPart;
 import flash.Vector;
@@ -39,9 +40,9 @@ class RecordLog<UpdateKind> extends LogWrapper<UpdateKind>
 	/**
 	 * 追加する
 	 */
-	public function add(phase:ReproducePhase<UpdateKind>, frame:Int, logway:LogwayKind):Void
+	public function add(phase:ReproducePhase<UpdateKind>, frame:Int, logway:LogwayKind, factorPos:PosInfos):Void
 	{
-		var logPart:LogPart<UpdateKind> = new LogPart<UpdateKind>(phase, frame, logway, nextId++);
+		var logPart:LogPart<UpdateKind> = new LogPart<UpdateKind>(phase, frame, logway, nextId++, factorPos);
 		list.push(logPart);
 	}
 	

@@ -4,6 +4,7 @@ package jp.sipo.gipo_framework_example.pilotView;
  * 
  * @auther sipo
  */
+import haxe.PosInfos;
 import jp.sipo.gipo.core.handler.GearDispatcher;
 import jp.sipo.gipo_framework_example.context.ViewForLogic.ViewSceneOrder;
 import jp.sipo.gipo_framework_example.pilotView.PilotView.PilotViewDiffuseKey;
@@ -27,6 +28,9 @@ class PilotViewScene extends StateGearHolderImpl implements ViewSceneOrder
 	/** 表示の更新（特に、必須ではない重い処理に使用する） */
 	public var drawDispatcher(default, null):GearDispatcher;
 	
+	/** 呼び出したLogic側のコード位置 */
+	public var factorPos(default, null):PosInfos;
+	
 	/** コンストラクタ */
 	public function new() 
 	{
@@ -35,6 +39,14 @@ class PilotViewScene extends StateGearHolderImpl implements ViewSceneOrder
 		updateDispatcher = gear.dispatcher(AddBehaviorPreset.addTail, false, PilotViewSceneDispatcherKind.Update);
 		inputUpdateDispatcher = gear.dispatcher(AddBehaviorPreset.addTail, false, PilotViewSceneDispatcherKind.InputUpdate);
 		drawDispatcher = gear.dispatcher(AddBehaviorPreset.addTail, false, PilotViewSceneDispatcherKind.Draw);
+	}
+	
+	/**
+	 * 呼び出し原因のコード位置を保存
+	 */
+	public function setFactorPos(factorPos:PosInfos):Void
+	{
+		this.factorPos = factorPos;
 	}
 	
 }

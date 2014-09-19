@@ -20,6 +20,7 @@ package jp.sipo.gipo_framework_example.context;
  * @auther sipo
  */
 
+import haxe.PosInfos;
 import jp.sipo.gipo_framework_example.operation.LogPart;
 import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
 import jp.sipo.gipo_framework_example.operation.Reproduce;
@@ -33,19 +34,19 @@ import jp.sipo.gipo.core.GearHolderImpl;
 interface HookForView
 {
 	/** Viewからの即時発行できる入力イベント */
-	public function viewInstantInput(command:EnumValue):Void;
+	public function viewInstantInput(command:EnumValue, ?pos:PosInfos):Void;
 	/** Viewからの非同期に発生するイベント */
-	public function viewAsyncInput(command:EnumValue):Void;
+	public function viewAsyncInput(command:EnumValue, factorPos:PosInfos):Void;
 }
 interface HookForLogic
 {
 	/** Logicからのデータの構成の状態 */
-	public function logicSnapshot(snapshot:Snapshot):Void;
+	public function logicSnapshot(snapshot:Snapshot, factorPos:PosInfos):Void;
 }
 interface HookForReproduce
 {
 	/** イベントの実行 */
-	public function executeEvent(logWay:LogwayKind):Void;
+	public function executeEvent(logWay:LogwayKind, factorPos:PosInfos):Void;
 }
 /* ================================================================
  * 実装
@@ -67,24 +68,24 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 	 * View向けのメソッド
 	 * ===============================================================*/
 	
-	public function viewInstantInput(command:EnumValue):Void
+	public function viewInstantInput(command:EnumValue, ?pos:PosInfos):Void
 	{
-		reproduce.noticeLog(LogwayKind.Instant(command));
+		reproduce.noticeLog(LogwayKind.Instant(command), pos);
 	}
 	
-	public function viewAsyncInput(command:EnumValue):Void
+	public function viewAsyncInput(command:EnumValue, factorPos:PosInfos):Void
 	{
-		reproduce.noticeLog(LogwayKind.Async(command));
+		reproduce.noticeLog(LogwayKind.Async(command), factorPos);
 	}
 	
 	/* ================================================================
 	 * Logic向けのメソッド
 	 * ===============================================================*/
 	
-	public function logicSnapshot(snapshot:Snapshot):Void
+	public function logicSnapshot(snapshot:Snapshot, factorPos:PosInfos):Void
 	{
 		// Reproduceに通知して処理を仰ぐ
-		reproduce.noticeLog(LogwayKind.Snapshot(snapshot));
+		reproduce.noticeLog(LogwayKind.Snapshot(snapshot), factorPos);
 	}
 	
 	
@@ -95,20 +96,19 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 	/**
 	 * イベントの実行
 	 */
-	public function executeEvent(logWay:LogwayKind):Void
+	public function executeEvent(logWay:LogwayKind, factorPos:PosInfos):Void
 	{
 		switch (logWay)
 		{
 			case LogwayKind.Instant(command) :
 				// イベントの実行
-				logic.noticeEvent(command);
+				logic.noticeEvent(command, factorPos);
 			case LogwayKind.Async(command) : 
-				// TODO:readyを待つ処理
 				// イベントの実行
-				logic.noticeEvent(command);
+				logic.noticeEvent(command, factorPos);
 			case LogwayKind.Snapshot(value) :
 				// イベントの実行
-				logic.setSnapshot(value);
+				logic.setSnapshot(value, factorPos);
 		}
 	}
 }

@@ -4,6 +4,7 @@ package jp.sipo.gipo_framework_example.context;
  * 
  * @auther sipo
  */
+import haxe.PosInfos;
 import jp.sipo.gipo.core.handler.GearDispatcherRedTape;
 import jp.sipo.gipo.core.handler.GearDispatcher;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
@@ -30,11 +31,11 @@ class LogicScene extends StateGearHolderImpl
 	}
 	
 	/* 表示ViewSceneを変更をする。返ってきた値は、ViewSceneであり、各ScenOrderにcastして使う */
-	private function changeViewScene(viewSceneKind:ViewSceneKind):Dynamic
+	private function changeViewScene(viewSceneKind:ViewSceneKind, ?pos:PosInfos):Dynamic
 	{
 		isChangeViewScene = true;
 		var view:ViewForLogic = gear.absorb(ViewForLogic);
-		return view.changeScene(viewSceneKind);
+		return view.changeScene(viewSceneKind, pos);
 	}
 	
 	/* run後チェック処理 */

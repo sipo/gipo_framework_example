@@ -5,6 +5,7 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import haxe.PosInfos;
 import jp.sipo.gipo.core.GearDiffuseTool;
 import jp.sipo.gipo.core.state.StateGearHolder;
 import jp.sipo.gipo.core.state.StateSwitcherGearHolderImpl;
@@ -97,7 +98,7 @@ class Reproduce<UpdateKind> extends StateSwitcherGearHolderImpl<ReproduceState<U
 	/**
 	 * イベントの発生を受け取る
 	 */
-	public function noticeLog(logway:LogwayKind):Void
+	public function noticeLog(logway:LogwayKind, factorPos:PosInfos):Void
 	{
 		var phaseValue:ReproducePhase<UpdateKind> = switch(phase)
 		{
@@ -105,7 +106,7 @@ class Reproduce<UpdateKind> extends StateSwitcherGearHolderImpl<ReproduceState<U
 			case Option.Some(v) : v;
 		}
 		// メイン処理
-		state.noticeLog(phaseValue, logway);
+		state.noticeLog(phaseValue, logway, factorPos);
 	}
 	
 	// MEMO:フェーズ終了で実行されるのはリプレイの時のみで、通常動作時は、即実行される
@@ -186,7 +187,7 @@ interface ReproduceState<UpdateKind> extends StateGearHolder
 	/**
 	 * ログ発生の通知
 	 */
-	public function noticeLog(phaseValue:ReproducePhase<UpdateKind>, logway:LogwayKind):Void;
+	public function noticeLog(phaseValue:ReproducePhase<UpdateKind>, logway:LogwayKind, factorPos:PosInfos):Void;
 	
 	/**
 	 * 切り替えの問い合わせ
