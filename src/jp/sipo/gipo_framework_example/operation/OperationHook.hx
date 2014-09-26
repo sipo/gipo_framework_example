@@ -4,8 +4,9 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo.reproduce.Reproduce;
 import jp.sipo.gipo.core.GearHolderImpl;
-class OperationHook extends GearHolderImpl
+class OperationHook extends GearHolderImpl implements OperationHookForReproduce
 {	
 	@:absorb
 	private var logic:OperationLogic;
@@ -24,18 +25,4 @@ class OperationHook extends GearHolderImpl
 	{
 		logic.noticeEvent(event);
 	}
-}
-/**
- * OperationLogic向けのイベント定義
- */
-enum OperationHookEvent
-{
-	/** ログの入力あり */
-	LogUpdate;
-	/** ローカル保存の指示 */
-	LocalSave;
-	/** ローカル読み込みの指示 */
-	LocalLoad;
-	/** リプレイの開始 */
-	StartReplay(logIndex:Int);
 }

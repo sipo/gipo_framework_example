@@ -4,13 +4,14 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
-import jp.sipo.gipo_framework_example.operation.LogWrapper.DisplaySnapshot;
+import jp.sipo.gipo.reproduce.Reproduce;
+import jp.sipo.gipo.reproduce.Reproduce.OperationHookEvent;
+import jp.sipo.gipo.reproduce.LogWrapper.DisplaySnapshot;
 import flash.Vector;
 import com.bit101.components.PushButton;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import com.bit101.components.Label;
 import com.bit101.components.ComboBox;
-import jp.sipo.gipo_framework_example.operation.OperationHook.OperationHookEvent;
 import flash.display.Sprite;
 import jp.sipo.wrapper.MinimalcompsGipoContainer;
 import jp.sipo.gipo.core.GearHolderImpl;

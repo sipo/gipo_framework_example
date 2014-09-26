@@ -4,7 +4,7 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
-import jp.sipo.gipo_framework_example.operation.LogWrapper.DisplaySnapshot;
+import jp.sipo.gipo.reproduce.LogWrapper.DisplaySnapshot;
 import flash.Vector;
 import jp.sipo.gipo.core.GearHolderLow;
 import flash.display.Sprite;

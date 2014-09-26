@@ -5,8 +5,8 @@ package jp.sipo.gipo_framework_example.context;
  * 
  * @auther sipo
  */
-import jp.sipo.gipo_framework_example.operation.LogPart.ReproducePhase;
-import jp.sipo.gipo_framework_example.operation.Reproduce;
+import jp.sipo.gipo.reproduce.LogPart.ReproducePhase;
+import jp.sipo.gipo.reproduce.Reproduce;
 import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
 import jp.sipo.gipo.core.GearHolderLow;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
@@ -91,7 +91,7 @@ class Top extends GearHolderImpl
 		childDiffuse(operationView , operationHook , OperationHook);
 		childDiffuse(operationLogic, operationView , OperationView);
 		childDiffuseWithKey(operationLogic , reproduce, TopDiffuseKey.ReproduceKey);
-		childDiffuse(reproduce, operationHook, OperationHook);
+		childDiffuse(reproduce, operationHook, OperationHookForReproduce);
 		
 		// ビューのレイヤーとなるSprite。DisplayObjectを使用するViewのみ使用し、Starlingを使用するViewでは無視されるかデバッグ表示のみに使用される
 		var viewLayer:Sprite = new Sprite();

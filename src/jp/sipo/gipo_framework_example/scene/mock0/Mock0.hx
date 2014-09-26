@@ -8,7 +8,7 @@ import jp.sipo.gipo_framework_example.scene.mock2.Mock2Ready;
 import jp.sipo.gipo_framework_example.scene.mock2.Mock2;
 import jp.sipo.gipo_framework_example.context.reproduce.LogicStatus.SnapshotKind;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
-import jp.sipo.gipo_framework_example.operation.Snapshot;
+import jp.sipo.gipo.reproduce.Snapshot;
 import jp.sipo.gipo_framework_example.context.LogicScene;
 import jp.sipo.gipo_framework_example.context.ViewForLogic;
 import jp.sipo.gipo_framework_example.scene.mock1.Mock1;

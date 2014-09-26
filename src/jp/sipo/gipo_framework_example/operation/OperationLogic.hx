@@ -6,20 +6,16 @@ package jp.sipo.gipo_framework_example.operation;
  * @auther sipo
  */
 import haxe.ds.Option;
-import jp.sipo.gipo_framework_example.operation.LogWrapper;
-import flash.Vector;
+import jp.sipo.gipo.reproduce.LogWrapper;
 import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
-import jp.sipo.util.Note;
 import jp.sipo.gipo_framework_example.context.Top;
 import String;
 import flash.utils.ByteArray;
-import jp.sipo.gipo_framework_example.operation.Reproduce;
+import jp.sipo.gipo.reproduce.Reproduce;
 import haxe.Serializer;
 import jp.sipo.util.HandlerUtil;
 import flash.events.Event;
 import flash.net.FileReference;
-import jp.sipo.util.Copy;
-import jp.sipo.gipo_framework_example.operation.OperationHook.OperationHookEvent;
 import jp.sipo.gipo.core.GearHolderImpl;
 import haxe.Unserializer;
 interface OperationPeek

@@ -20,12 +20,12 @@ package jp.sipo.gipo_framework_example.context;
  * @auther sipo
  */
 
+import jp.sipo.gipo.reproduce.Snapshot;
 import haxe.PosInfos;
-import jp.sipo.gipo_framework_example.operation.LogPart;
+import jp.sipo.gipo.reproduce.LogPart;
 import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
-import jp.sipo.gipo_framework_example.operation.Reproduce;
+import jp.sipo.gipo.reproduce.Reproduce;
 import jp.sipo.gipo_framework_example.context.Top.TopDiffuseKey;
-import jp.sipo.gipo_framework_example.operation.Snapshot;
 import jp.sipo.gipo_framework_example.context.Logic.LogicForHook;
 import jp.sipo.gipo.core.GearHolderImpl;
 /* ================================================================
@@ -42,11 +42,6 @@ interface HookForLogic
 {
 	/** Logicからのデータの構成の状態 */
 	public function logicSnapshot(snapshot:Snapshot, factorPos:PosInfos):Void;
-}
-interface HookForReproduce
-{
-	/** イベントの実行 */
-	public function executeEvent(logWay:LogwayKind, factorPos:PosInfos):Void;
 }
 /* ================================================================
  * 実装
