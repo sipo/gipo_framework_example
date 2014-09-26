@@ -4,7 +4,7 @@ package jp.sipo.gipo_framework_example.context.reproduce;
  * 
  * @auther sipo
  */
-import jp.sipo.gipo_framework_example.operation.Snapshot;
+import jp.sipo.gipo.reproduce.Snapshot;
 class LogicStatus
 {
 	/** Mock1が表示された回数をカウントしておく */

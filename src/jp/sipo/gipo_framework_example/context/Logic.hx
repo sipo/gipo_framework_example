@@ -12,7 +12,7 @@ import jp.sipo.gipo_framework_example.context.reproduce.LogicStatus;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import jp.sipo.gipo_framework_example.scene.mock1.Mock1;
 import jp.sipo.gipo_framework_example.context.Hook.HookForLogic;
-import jp.sipo.gipo_framework_example.operation.Snapshot;
+import jp.sipo.gipo.reproduce.Snapshot;
 import jp.sipo.gipo.core.GearDiffuseTool;
 import jp.sipo.gipo_framework_example.scene.initialize.LogicInitialize;
 import jp.sipo.ds.Point;
