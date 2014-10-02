@@ -119,7 +119,7 @@ class Top extends GearHolderImpl
 	/* child以下にtargetをenumでdiffuseする */
 	inline private function childDiffuseWithKey(child:GearHolderLow, target:GearHolderLow, key:TopDiffuseKey):Void
 	{
-		child.gearOutside().otherDiffuseWithEnum(target, key);
+		child.gearOutside().otherDiffuseWithKey(target, key);
 	}
 	
 	@:handler(GearDispatcherKind.Run)
