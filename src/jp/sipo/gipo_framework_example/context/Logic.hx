@@ -111,11 +111,5 @@ enum LogicCommonEvent
 	MouseDown(point:Point<Int>);
 	MouseDrag(point:Point<Int>);
 	MouseUp(point:Point<Int>);
-	/**
-	 * 再現時にマウスの位置を表示するためのガイド。
-	 * MouseOver時に1秒に１回ほど更新される。
-	 * PCでのみ意味があり、スマホ端末では使用しないはず。
-	 * 最もデータが重くなるので、場合によってはもっと間引く
-	 */
-	MouseGuide(point:Point<Int>);
+	// TODO:<<尾野>>未実装
 }
