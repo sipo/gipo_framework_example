@@ -6,7 +6,7 @@ package jp.sipo.gipo_framework_example.scene.mock0;
  */
 import jp.sipo.gipo_framework_example.scene.mock2.Mock2Ready;
 import jp.sipo.gipo_framework_example.scene.mock2.Mock2;
-import jp.sipo.gipo_framework_example.context.reproduce.LogicStatus.SnapshotKind;
+import jp.sipo.gipo_framework_example.context.reproduce.SnapshotKind;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import jp.sipo.gipo.reproduce.Snapshot;
 import jp.sipo.gipo_framework_example.context.LogicScene;
@@ -50,7 +50,7 @@ class Mock0 extends LogicScene
 	
 	/* Viewからの入力 */
 	@:redTapeHandler(LogicSceneDispatcherKind.ViewInput)
-	private function viewInput(command:Mock0Input):Void
+	private function viewInput(command:Mock0Input):Void	// TODO:<<尾野>>ViewInputの名前はSectionInputに変更されるべきだ。
 	{
 		switch(command)
 		{

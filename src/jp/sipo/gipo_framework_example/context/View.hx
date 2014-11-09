@@ -24,7 +24,8 @@ interface View extends GearHolderLow extends ViewForLogic
 	
 	/**
 	 * フレーム間の更新。
-	 * 処理停止中でも動作するので、この関数の階数に依存した処理をしてはいけない
+	 * 処理停止中でも動作するので、この関数の回数に依存した処理をしてはいけない。
+	 * 表示の準備など、フレームに非同期的な処理に利用する。
 	 */
 	public function asyncUpdate():Void;
 	

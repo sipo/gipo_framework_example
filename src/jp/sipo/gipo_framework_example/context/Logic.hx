@@ -7,6 +7,8 @@ package jp.sipo.gipo_framework_example.context;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo_framework_example.context.reproduce.SnapshotImpl;
+import jp.sipo.gipo_framework_example.context.reproduce.SnapshotKind;
 import haxe.PosInfos;
 import jp.sipo.gipo_framework_example.context.reproduce.LogicStatus;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
@@ -76,11 +78,14 @@ class Logic extends StateSwitcherGearHolderImpl<LogicScene> implements LogicForH
 		}
 	}
 	
+	/**
+	 * SnapShoptに対する動作を定義する
+	 */
 	public function setSnapshot(snapshot:Snapshot, factorPos:PosInfos):Void
 	{
 		var snapshotImpl:SnapshotImpl = cast(snapshot, SnapshotImpl);
 		// logicStatusの反映
-		logicStatus.setAll(snapshotImpl);
+		logicStatus.setAll(snapshotImpl.logicStatus);
 		// 種類に応じる処理
 		switch(snapshotImpl.kind)
 		{

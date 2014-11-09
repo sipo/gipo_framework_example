@@ -68,11 +68,13 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 	 * View向けのメソッド
 	 * ===============================================================*/
 	
+	/** Viewからの即時発行できる入力イベント */
 	public function viewInstantInput(command:EnumValue, ?pos:PosInfos):Void
 	{
 		reproduce.noticeLog(LogwayKind.Instant(command), pos);
 	}
 	
+	/** Viewからの非同期に発生するイベント */
 	public function viewAsyncInput(command:EnumValue, factorPos:PosInfos):Void
 	{
 		reproduce.noticeLog(LogwayKind.Async(command), factorPos);
@@ -87,7 +89,6 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 		// Reproduceに通知して処理を仰ぐ
 		reproduce.noticeLog(LogwayKind.Snapshot(snapshot), factorPos);
 	}
-	
 	
 	/* ================================================================
 	 * Reproduce向けのメソッド
