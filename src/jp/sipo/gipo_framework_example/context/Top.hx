@@ -26,7 +26,7 @@ class Top extends GearHolderImpl
 	/* 開発設定 */
 	private var devConfig:DevConfig;
 	/* 各セクションを超えた全体状態管理 */
-	private var globalStatus:GlobalStatus;
+	private var globalStatus:GlobalContext;
 	
 	/* 基本インスタンス */
 	private var logic:Logic;
@@ -51,11 +51,11 @@ class Top extends GearHolderImpl
 	@:handler(GearDispatcherKind.Diffusible)
 	private function diffusible(tool:GearDiffuseTool):Void
 	{
-		globalStatus = new GlobalStatus();
+		globalStatus = new GlobalContext();
 		
 		// configの拡散
 		tool.diffuse(devConfig, DevConfig);
-		tool.diffuse(globalStatus, GlobalStatus);
+		tool.diffuse(globalStatus, GlobalContext);
 		// operationcの用意
 		operationLogic = new OperationLogic();
 		tool.bookChild(operationLogic);

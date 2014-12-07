@@ -50,7 +50,7 @@ class Mock0 extends LogicScene
 	
 	/* Viewからの入力 */
 	@:redTapeHandler(LogicSceneDispatcherKind.ViewInput)
-	private function viewInput(command:Mock0Input):Void	// TODO:<<尾野>>ViewInputの名前はSectionInputに変更されるべきだ。
+	private function viewInput(command:Mock0Input):Void
 	{
 		switch(command)
 		{
