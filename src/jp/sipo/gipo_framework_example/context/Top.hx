@@ -57,26 +57,19 @@ class Top extends GearHolderImpl
 		tool.diffuse(devConfig, DevConfig);
 		tool.diffuse(globalStatus, GlobalContext);
 		// operationcの用意
-		operationLogic = new OperationLogic();
-		tool.bookChild(operationLogic);
+		operationLogic = tool.bookChild(new OperationLogic());
 		var operationViewClass = devConfig.operationView;
-		operationView = Type.createInstance(operationViewClass, []);
-		tool.bookChild(operationView);
-		operationHook = new OperationHook();
-		tool.bookChild(operationHook);
+		operationView = tool.bookChild(Type.createInstance(operationViewClass, []));
+		operationHook = tool.bookChild(new OperationHook());
 		// reproduceの用意
-		reproduce = new Reproduce<ExampleUpdateKind>();
-		tool.bookChild(reproduce);
+		reproduce = tool.bookChild(new Reproduce<ExampleUpdateKind>());
 		// hookの用意
-		hook = new Hook();
-		tool.bookChild(hook);
+		hook = tool.bookChild(new Hook());
 		// viewの用意
 		var viewClass = devConfig.view;
-		view = Type.createInstance(viewClass, []);
-		tool.bookChild(view);
+		view = tool.bookChild(Type.createInstance(viewClass, []));
 		// logicの用意
-		logic = new Logic();
-		tool.bookChild(logic);
+		logic = tool.bookChild(new Logic());
 		
 		// 関係性の追加
 		// 	Logic周り
@@ -105,10 +98,9 @@ class Top extends GearHolderImpl
 		
 		
 		// イベント準備
-		globalDispatcher = new GlobalDispatcher();
+		globalDispatcher = tool.bookChild(new GlobalDispatcher());
 		globalDispatcher.setFlashContext(current);
 		tool.diffuse(globalDispatcher, GlobalDispatcher);
-		tool.bookChild(globalDispatcher);
 		globalDispatcher.addFrameHandler(frame);	// フレームイベント
 	}
 	/* child以下にtargetをdiffuseする */

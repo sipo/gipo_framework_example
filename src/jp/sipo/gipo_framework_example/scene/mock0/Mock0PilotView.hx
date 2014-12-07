@@ -33,8 +33,7 @@ class Mock0PilotView extends PilotViewScene implements Mock0ViewOrder
 		uiLayer = new Sprite();
 		layer.addChild(uiLayer);
 		gear.disposeTask(function () layer.removeChild(uiLayer));
-		uiContainer = new MinimalcompsGipoContainer(uiLayer);
-		gear.addChild(uiContainer);
+		uiContainer = gear.addChild(new MinimalcompsGipoContainer(uiLayer));
 		// 表示設置
 		// ラベルの設置
 		uiContainer.addLabel("開発テスト画面0");

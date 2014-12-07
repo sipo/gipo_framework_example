@@ -60,10 +60,8 @@ class OperationOverView extends GearHolderImpl implements OperationView
 	{
 		var uiContainerConfig:Config = MinimalcompsGipoContainer.getDefaultConfig().clone();
 		uiContainerConfig.alignH = AlignH.Right;
-		minimalizeUiContainer = new MinimalcompsGipoContainer(minimalizeUiLayer, uiContainerConfig);
-		openUiContainer = new MinimalcompsGipoContainer(openUiLayer, uiContainerConfig);
-		gear.addChild(minimalizeUiContainer);
-		gear.addChild(openUiContainer);
+		minimalizeUiContainer = gear.addChild(new MinimalcompsGipoContainer(minimalizeUiLayer, uiContainerConfig));
+		openUiContainer = gear.addChild(new MinimalcompsGipoContainer(openUiLayer, uiContainerConfig));
 		// 表示設置
 		// ボタンの設置
 		minimalizeUiContainer.addPushButton("Operation", operationButton_click);
