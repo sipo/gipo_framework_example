@@ -5,6 +5,7 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo_framework_example.operation.OperationView;
 import haxe.ds.Option;
 import jp.sipo.gipo.reproduce.LogWrapper;
 import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
@@ -18,10 +19,6 @@ import flash.events.Event;
 import flash.net.FileReference;
 import jp.sipo.gipo.core.GearHolderImpl;
 import haxe.Unserializer;
-interface OperationPeek
-{
-	
-}
 class OperationLogic extends GearHolderImpl
 {
 	@:absorb
@@ -32,28 +29,26 @@ class OperationLogic extends GearHolderImpl
 	/* 最後に読み込んだログ */
 	private var loadFile:Option<RecordLog<ExampleUpdateKind>> = Option.None;
 	
-	
 	/** コンストラクタ */
 	public function new() 
 	{
 		super();
 	}
 	
+	/* ================================================================
+	 * OperationView
+	 * ===============================================================*/
+	 
 	/**
-	 * OperationLogicそのものに対するイベント発生
+	 * OperationViewからのイベント処理
 	 */
-	public function noticeEvent(event:OperationHookEvent):Void
+	public function noticeOperationViewEvent(event:OperationViewEvent):Void
 	{
 		switch (event)
 		{
-			case OperationHookEvent.LogUpdate : 
-			{
-				var reproduceLog:RecordLog<Dynamic> = reproduce.getRecordLog();
-				operationView.updateLog(reproduceLog.getLength());
-			}
-			case OperationHookEvent.LocalSave : localSave();
-			case OperationHookEvent.LocalLoad :  localLoad();
-			case OperationHookEvent.StartReplay(logIndex) :  startReplay(logIndex);
+			case OperationViewEvent.LocalSave : localSave();
+			case OperationViewEvent.LocalLoad :  localLoad();
+			case OperationViewEvent.StartReplay(logIndex) :  startReplay(logIndex);
 		}
 	}
 	
@@ -111,6 +106,26 @@ class OperationLogic extends GearHolderImpl
 		reproduce.startReplay(reproduceFile.convertReplay(), logIndex); 
 	}
 	
+	/* ================================================================
+	 * Reproduce
+	 * ===============================================================*/
 	
+	/**
+	 * Reproduceからのイベント処理
+	 */
+	public function noticeReproduceEvent(event:ReproduceEvent):Void
+	{
+		switch (event)
+		{
+			case ReproduceEvent.LogUpdate : logUpdate();
+		}
+	}
+	
+	/* ログの更新への反応 */
+	private function logUpdate():Void
+	{
+		var reproduceLog:RecordLog<Dynamic> = reproduce.getRecordLog();
+		operationView.updateLog(reproduceLog.getLength());
+	}
 	
 }

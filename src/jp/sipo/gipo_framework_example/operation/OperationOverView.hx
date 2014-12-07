@@ -4,8 +4,7 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
-import jp.sipo.gipo.reproduce.Reproduce;
-import jp.sipo.gipo.reproduce.Reproduce.OperationHookEvent;
+import jp.sipo.gipo_framework_example.operation.OperationView;
 import jp.sipo.gipo.reproduce.LogWrapper.DisplaySnapshot;
 import flash.Vector;
 import com.bit101.components.PushButton;
@@ -19,7 +18,7 @@ class OperationOverView extends GearHolderImpl implements OperationView
 {
 	
 	@:absorb
-	private var hook:OperationHook;
+	private var hook:OperationHookForView;
 	/* 表示Sprite */
 	private var minimalizeUiLayer:Sprite;
 	private var openUiLayer:Sprite;
@@ -118,13 +117,13 @@ class OperationOverView extends GearHolderImpl implements OperationView
 	/* 保存ボタンをクリック */
 	private function saveLogButton_click():Void
 	{
-		hook.input(OperationHookEvent.LocalSave);
+		hook.noticeOperationViewEvent(OperationViewEvent.LocalSave);
 	}
 	
 	/* 読み込みボタンをクリック */
 	private function loadLogButton_click():Void
 	{
-		hook.input(OperationHookEvent.LocalLoad);
+		hook.noticeOperationViewEvent(OperationViewEvent.LocalLoad);
 	}
 	
 	
@@ -159,7 +158,7 @@ class OperationOverView extends GearHolderImpl implements OperationView
 		// comboboxで指定されているlog番号を返す
 		var kit:DisplaySnapshot = displaySnapshotList[snapshotIndex];
 		var logIndex:Int = kit.logIndex;
-		hook.input(OperationHookEvent.StartReplay(logIndex));
+		hook.noticeOperationViewEvent(OperationViewEvent.StartReplay(logIndex));
 	}
 }
 /** 表示状態 */

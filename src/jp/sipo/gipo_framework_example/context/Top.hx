@@ -88,7 +88,7 @@ class Top extends GearHolderImpl
 		childDiffuseWithKey(hook , reproduce, TopDiffuseKey.ReproduceKey);
 		childDiffuse(reproduce , hook, HookForReproduce);
 		childDiffuse(operationHook , operationLogic, OperationLogic);
-		childDiffuse(operationView , operationHook , OperationHook);
+		childDiffuse(operationView , operationHook , OperationHookForView);
 		childDiffuse(operationLogic, operationView , OperationView);
 		childDiffuseWithKey(operationLogic , reproduce, TopDiffuseKey.ReproduceKey);
 		childDiffuse(reproduce, operationHook, OperationHookForReproduce);
