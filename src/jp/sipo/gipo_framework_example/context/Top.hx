@@ -134,8 +134,9 @@ class Top extends GearHolderImpl
 		// 再現状態の更新処理
 		reproduce.update();
 		
-		if (reproduce.getCanProgress())	// フレームの進行が可能かどうか
+		if (reproduce.checkCanProgress())	// フレームの進行が可能かどうか
 		{
+			
 			// inputUpdate（マウスドラッグなどの入力）
 			reproduce.startInFramePhase(ExampleUpdateKind.ViewInput);
 			view.inputUpdate();
