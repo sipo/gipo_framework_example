@@ -40,7 +40,7 @@ class Mock0PilotView extends PilotViewScene implements Mock0ViewOrder
 		// ボタンの設置
 		uiContainer.addPushButton("入力テスト", demoDisplayButton_click);
 		uiContainer.addPushButton("遷移テスト", demoChangeSceneButton_click);
-		uiContainer.addPushButton("非同期テスト", demoAsyncSceneButton_click);
+		uiContainer.addPushButton("準備イベントテスト", demoReadySceneButton_click);
 		
 	}
 	
@@ -56,10 +56,10 @@ class Mock0PilotView extends PilotViewScene implements Mock0ViewOrder
 		hook.viewInstantInput(Mock0Input.DemoChangeSceneButton);
 	}
 	
-	/* 非同期テスト */
-	private function demoAsyncSceneButton_click():Void
+	/* 準備イベントテスト */
+	private function demoReadySceneButton_click():Void
 	{
-		hook.viewInstantInput(Mock0Input.DemoAsyncSceneButton);
+		hook.viewInstantInput(Mock0Input.DemoReadySceneButton);
 	}
 	
 	/* ================================================================

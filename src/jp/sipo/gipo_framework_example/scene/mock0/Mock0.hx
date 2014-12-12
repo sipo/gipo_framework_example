@@ -21,7 +21,7 @@ enum Mock0Input
 {
 	DemoDisplayButton;
 	DemoChangeSceneButton;
-	DemoAsyncSceneButton;
+	DemoReadySceneButton;
 }
 /** 命令 */
 interface Mock0ViewOrder
@@ -56,7 +56,7 @@ class Mock0 extends LogicScene
 		{
 			case Mock0Input.DemoDisplayButton: input_demoTraceButton();
 			case Mock0Input.DemoChangeSceneButton: input_demoChangeSceneButton();
-			case Mock0Input.DemoAsyncSceneButton: input_demoAsyncSceneButton();
+			case Mock0Input.DemoReadySceneButton: input_demoReadySceneButton();
 		}
 	}
 	
@@ -73,8 +73,8 @@ class Mock0 extends LogicScene
 		logic.snapshotEvent(SnapshotKind.Mock1);
 	}
 	
-	/* 非同期テストボタンのクリック */
-	private function input_demoAsyncSceneButton():Void
+	/* 準備イベントテストボタンのクリック */
+	private function input_demoReadySceneButton():Void
 	{
 		logic.changeState(new Mock2Ready());
 	}

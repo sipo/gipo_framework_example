@@ -8,8 +8,8 @@ package jp.sipo.gipo_framework_example.context;
  * 	Instant
  * 		ユーザー入力等、基本的なイベント
  * 		入力情報は、再現データから瞬時に復元できるものである必要がある（外部ファイルとかを読む必要が無い）
- * 	Async
- * 		データの読み込みなど、非同期であったり、終了時間が読めないイベント
+ * 	Ready
+ * 		再現時にメソッドの命令だけではなく実際にリソースの用意などが必要な処理
  * 		GPUへの非同期な準備や、必要データの非同期な展開などもこれに含む。
  * 		再現時には、Logicのほうがセクションに合わせて停止する必要がある。
  * 	Snapshot
@@ -40,8 +40,8 @@ interface HookForView
 {
 	/** Viewからの即時発行できる入力イベント */
 	public function viewInstantInput(command:EnumValue, ?pos:PosInfos):Void;
-	/** Viewからの非同期に発生するイベント */
-	public function viewAsyncInput(command:EnumValue, factorPos:PosInfos):Void;
+	/** Viewからの準備の終了イベント */
+	public function viewReadyInput(command:EnumValue, factorPos:PosInfos):Void;
 }
 interface HookForLogic
 {
@@ -74,10 +74,10 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 		reproduce.noticeLog(LogwayKind.Instant(command), pos);
 	}
 	
-	/** Viewからの非同期に発生するイベント */
-	public function viewAsyncInput(command:EnumValue, factorPos:PosInfos):Void
+	/** Viewからの準備の終了イベント */
+	public function viewReadyInput(command:EnumValue, factorPos:PosInfos):Void
 	{
-		reproduce.noticeLog(LogwayKind.Async(command), factorPos);
+		reproduce.noticeLog(LogwayKind.Ready(command), factorPos);
 	}
 	
 	/* ================================================================
@@ -104,7 +104,7 @@ class Hook extends GearHolderImpl implements HookForView implements HookForLogic
 			case LogwayKind.Instant(command) :
 				// イベントの実行
 				logic.noticeEvent(command, factorPos);
-			case LogwayKind.Async(command) : 
+			case LogwayKind.Ready(command) : 
 				// イベントの実行
 				logic.noticeEvent(command, factorPos);
 			case LogwayKind.Snapshot(value) :
