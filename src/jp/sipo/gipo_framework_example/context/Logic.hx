@@ -7,6 +7,7 @@ package jp.sipo.gipo_framework_example.context;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo.core.state.StateGearHolder;
 import jp.sipo.gipo_framework_example.context.reproduce.SnapshotImpl;
 import jp.sipo.gipo_framework_example.context.reproduce.SnapshotKind;
 import haxe.PosInfos;
@@ -26,6 +27,8 @@ class Logic extends StateSwitcherGearHolderImpl<LogicScene> implements LogicForH
 	
 	/* Logic内部の全体データ */
 	private var logicStatus:LogicStatus;
+	/* シーン変更直後の入力ロックフラグ */
+	private var afterChangeInputBlock:Bool = false;
 	
 	/** コンストラクタ */
 	public function new() { super(); }
@@ -37,6 +40,8 @@ class Logic extends StateSwitcherGearHolderImpl<LogicScene> implements LogicForH
 		
 		tool.diffuse(this, Logic);
 		tool.diffuse(logicStatus, LogicStatus);
+		
+		stateSwitcherGear.addEnterStateChangeHandler(enterStateChangeHandler);
 	}
 	
 	/**
@@ -53,6 +58,9 @@ class Logic extends StateSwitcherGearHolderImpl<LogicScene> implements LogicForH
 	 */
 	public function update():Void
 	{
+		// 更新されたらロックは解除される（フレーム間イベントの場合、これはそのフレームの頭となる）
+		afterChangeInputBlock = false;
+		// シーンに更新処理を伝える
 		state.sceneUpdate();
 	}
 	
@@ -65,17 +73,29 @@ class Logic extends StateSwitcherGearHolderImpl<LogicScene> implements LogicForH
 		hook.logicSnapshot(new SnapshotImpl(kind, logicStatus), pos);
 	}
 	
+	/* state切り替わり時イベント */
+	private function enterStateChangeHandler(nextHolder:StateGearHolder):Void
+	{
+		afterChangeInputBlock = true;
+	}
+	
 	/* ================================================================
 	 * hookに対する定義
 	 * ===============================================================*/
 	
 	public function noticeEvent(command:EnumValue, factorPos:PosInfos):Void
 	{
+		// MEMO:<<尾野>>ここにisがあるのが非常に残念なので、何とかしたくはあるが、さらにenumで包むと呼び出しが煩雑になるので悩ましい。
 		if (Std.is(command, LogicCommonEvent)){
-			throw "未設定";	// TODO:stb
-		}else{
-			state.noticeEvent(command);
+		
+			throw "未設定";	// TODO:LogicCommonを用意する
+			return;
 		}
+		// changeScene直後の入力をロック。
+		// MEMO:<<尾野>>本来はcommandごとに入力をロックするかどうか決まっている必要がありそう
+		if (state.needAfterChangeBlockInput && afterChangeInputBlock) return;
+		// その他のイベントの場合、下位へ渡す
+		state.noticeEvent(command);
 	}
 	
 	/**
