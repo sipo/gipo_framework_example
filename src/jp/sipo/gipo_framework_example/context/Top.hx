@@ -5,9 +5,8 @@ package jp.sipo.gipo_framework_example.context;
  * 
  * @auther sipo
  */
-import jp.sipo.gipo.reproduce.LogPart.ReproducePhase;
+import jp.sipo.gipo_framework_example.context.reproduce.UpdateKind;
 import jp.sipo.gipo.reproduce.Reproduce;
-import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
 import jp.sipo.gipo.core.GearHolderLow;
 import jp.sipo.gipo.core.Gear.GearDispatcherKind;
 import jp.sipo.gipo_framework_example.context.Logic;
@@ -35,7 +34,7 @@ class Top extends GearHolderImpl
 	private var operationLogic:OperationLogic;
 	private var operationHook:OperationHook;
 	private var operationView:OperationView;
-	private var reproduce:Reproduce<ExampleUpdateKind>;
+	private var reproduce:Reproduce<UpdateKind>;
 	
 	/* 全体イベントの発行 */
 	private var globalDispatcher:GlobalDispatcher;
@@ -62,7 +61,7 @@ class Top extends GearHolderImpl
 		operationView = tool.bookChild(Type.createInstance(operationViewClass, []));
 		operationHook = tool.bookChild(new OperationHook());
 		// reproduceの用意
-		reproduce = tool.bookChild(new Reproduce<ExampleUpdateKind>());
+		reproduce = tool.bookChild(new Reproduce<UpdateKind>());
 		// hookの用意
 		hook = tool.bookChild(new Hook());
 		// viewの用意
@@ -138,7 +137,7 @@ class Top extends GearHolderImpl
 		{
 			
 			// inputUpdate（マウスドラッグなどの入力）
-			reproduce.startInFramePhase(ExampleUpdateKind.ViewInput);
+			reproduce.startInFramePhase(UpdateKind.ViewInput);
 			view.inputUpdate();
 			reproduce.endPhase();
 			

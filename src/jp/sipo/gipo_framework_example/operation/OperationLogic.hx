@@ -5,10 +5,10 @@ package jp.sipo.gipo_framework_example.operation;
  * 
  * @auther sipo
  */
+import jp.sipo.gipo_framework_example.context.reproduce.UpdateKind;
 import jp.sipo.gipo_framework_example.operation.OperationView;
 import haxe.ds.Option;
 import jp.sipo.gipo.reproduce.LogWrapper;
-import jp.sipo.gipo_framework_example.context.reproduce.ExampleUpdateKind;
 import jp.sipo.gipo_framework_example.context.Top;
 import String;
 import flash.utils.ByteArray;
@@ -24,10 +24,10 @@ class OperationLogic extends GearHolderImpl
 	@:absorb
 	private var operationView:OperationView;
 	@:absorbWithKey(TopDiffuseKey.ReproduceKey)
-	private var reproduce:Reproduce<ExampleUpdateKind>;
+	private var reproduce:Reproduce<UpdateKind>;
 	
 	/* 最後に読み込んだログ */
-	private var loadFile:Option<RecordLog<ExampleUpdateKind>> = Option.None;
+	private var loadFile:Option<RecordLog<UpdateKind>> = Option.None;
 	
 	/** コンストラクタ */
 	public function new() 
@@ -56,7 +56,7 @@ class OperationLogic extends GearHolderImpl
 	private function localSave():Void
 	{
 		var fileReference:FileReference = new FileReference();
-		var recordLog:RecordLog<ExampleUpdateKind> = reproduce.getRecordLog();
+		var recordLog:RecordLog<UpdateKind> = reproduce.getRecordLog();
 		var dataString:String = Serializer.run(recordLog);
 		var date:Date = Date.now();
 		var milliSecond:String = StringTools.lpad(Std.string((date.getTime() % 1000)),"0",3);
@@ -84,8 +84,8 @@ class OperationLogic extends GearHolderImpl
 		fileData.position = 0;
 		var dataString:String = fileData.readUTFBytes(fileData.length);
 		// データを解析
-		var reproduceFile:RecordLog<ExampleUpdateKind> = Unserializer.run(dataString);
-		var replayLog:ReplayLog<ExampleUpdateKind> = reproduceFile.convertReplay();
+		var reproduceFile:RecordLog<UpdateKind> = Unserializer.run(dataString);
+		var replayLog:ReplayLog<UpdateKind> = reproduceFile.convertReplay();
 		// バイナリデータは消しておく
 		fileData.clear();
 		// メンバ変数に保持
@@ -97,7 +97,7 @@ class OperationLogic extends GearHolderImpl
 	/* リプレイの開始命令 */
 	private function startReplay(logIndex:Int):Void
 	{
-		var reproduceFile:RecordLog<ExampleUpdateKind> = switch(loadFile)
+		var reproduceFile:RecordLog<UpdateKind> = switch(loadFile)
 		{
 			case Option.None : throw '開始するデータがロードされていません';
 			case Option.Some(v) : v;
