@@ -143,6 +143,8 @@ class Top extends GearHolderImpl
 			
 			// Logicのメイン処理
 			logic.update();
+			
+			// 描画処理
 			view.update();
 			view.draw();
 		}
